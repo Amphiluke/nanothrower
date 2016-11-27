@@ -1,0 +1,89 @@
+@import (reference) "utils";
+@import (reference) "ui";
+
+.nt-menu {
+    background:@panel-light-color;
+    border-bottom:1px solid @border-light-color;
+    margin:0;
+    padding:0;
+    .app-busy &:after {
+        content:url("../img/loader.gif");
+        cursor:wait;
+        float:right;
+        margin:6px 8px 0 0;
+    }
+    > li {
+        display:inline-block;
+        list-style:none;
+        margin:0;
+        padding:0;
+        position:relative;
+    }
+    button[menu] {
+        cursor:pointer;
+        background:none;
+        border:none;
+        padding:3px 10px;
+        &:hover {
+            background:@highlight-color;
+        }
+        &:before {
+            content:attr(value);
+        }
+    }
+    menu[type="popup"] {
+        background:@panel-light-color;
+        border:1px solid @border-light-color;
+        margin:0;
+        padding:0;
+        position:absolute;
+        visibility:hidden;
+        z-index:2;
+        &.expanded {
+            visibility:visible;
+        }
+    }
+    menuitem {
+        cursor:pointer;
+        display:block;
+        max-width:250px;
+        overflow:hidden;
+        padding:5px 7px;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+        &:hover {
+            background:@highlight-color;
+        }
+        &:before {
+            content:attr(label);
+        }
+        &[disabled] {
+            color:#a0a0a0;
+            &:hover {
+                background:none;
+            }
+            &:before {
+                text-shadow:0 1px 0 #fff;
+            }
+        }
+    }
+    hr {
+        border:1px inset #fff;
+        color:#fff;
+    }
+}
+
+#nt-file {
+    cursor:pointer;
+    display:none;
+    height:5px * 2 + @root-line-height;
+    left:0;
+    max-width:175px;
+    opacity:0.01;
+    position:absolute;
+    top:3px * 2 + @root-line-height;
+    z-index:2;
+    menu.expanded + & {
+        display:inline;
+    }
+}

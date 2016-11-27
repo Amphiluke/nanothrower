@@ -1,0 +1,10 @@
+.vendor-prefix(@property; @value) {
+    -webkit-@{property}:@value;
+    -moz-@{property}:@value;
+    -o-@{property}:@value;
+    @{property}:@value;
+}
+
+.box-sizing(...) {
+    .vendor-prefix(box-sizing; @arguments);
+}

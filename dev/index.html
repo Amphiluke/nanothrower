@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Nanothrower</title>
+    <link rel="icon" type="image/png" href="../favicon.png"/>
+    <link rel="stylesheet" href="css/main.css"/>
+</head>
+<body>
+
+<menu type="toolbar" class="nt-menu">
+    <li>
+        <button type="menu" value="File" menu="file-menu"></button>
+        <menu id="file-menu" type="popup">
+            <menuitem label="Load structure…" data-action="load"></menuitem>
+            <menuitem label="Save structure…" data-action="save"></menuitem>
+        </menu>
+        <input type="file" id="nt-file" autocomplete="off" accept=".hin,.ml2,.mol2,.xyz"/>
+    </li>
+    <li>
+        <button type="menu" value="Make" menu="make-menu"></button>
+        <menu id="make-menu" type="popup">
+            <menuitem label="Create graphene…" data-action="graphene"></menuitem>
+            <menuitem label="Create nanotube…" data-action="nanotube"></menuitem>
+            <hr/>
+            <menuitem label="Convert to BN" data-action="bnConvert"></menuitem>
+        </menu>
+    </li>
+    <li>
+        <button type="menu" value="Edit" menu="edit-menu"></button>
+        <menu id="edit-menu" type="popup">
+            <menuitem label="Set parameters…" data-action="setup"></menuitem>
+            <menuitem label="Transformation of coordinates…" data-action="transform"></menuitem>
+        </menu>
+    </li>
+    <li>
+        <button type="menu" value="Run" menu="run-menu"></button>
+        <menu id="run-menu" type="popup">
+            <menuitem label="Run" data-action="run"></menuitem>
+        </menu>
+    </li>
+    <li>
+        <button type="menu" value="View" menu="view-menu"></button>
+        <menu id="view-menu" type="popup">
+            <menuitem label="Appearance…" data-action="alterView"></menuitem>
+        </menu>
+    </li>
+</menu>
+
+<form action="#" class="nt-dialog nt-save-form hidden">
+    <h2>Save structure</h2>
+    <p>
+        <label for="nt-file-type">Select file type to save</label><br/>
+        <select id="nt-file-type">
+            <optgroup label="HyperChem" data-type="hin">
+                <option value="hin-basic" data-graph="basic" selected>HIN file (basic graph only)</option>
+                <option value="hin-extra" data-graph="extra">HIN file (basic and extra graphs)</option>
+                <option value="hin-empty" data-graph="empty">HIN file (empty graph)</option>
+            </optgroup>
+            <optgroup label="Tripos MOL2" data-type="ml2">
+                <option value="ml2-basic" data-graph="basic">ML2 file (basic graph only)</option>
+                <option value="ml2-extra" data-graph="extra">ML2 file (basic and extra graphs)</option>
+                <option value="ml2-empty" data-graph="empty">ML2 file (empty graph)</option>
+            </optgroup>
+            <optgroup label="Cartesian" data-type="xyz">
+                <option value="xyz">XYZ file</option>
+            </optgroup>
+        </select>
+    </p>
+    <div>
+        <p class="nt-description" data-type="hin-basic">Save in HyperChem file format (*.hin) skipping extra-bonds (they will be lost).</p>
+        <p class="nt-description hidden" data-type="hin-extra">Save in HyperChem file format (*.hin) and include extra-bonds. Such files could be reopened later in OpenEvolver, but they are not compatible with HyperChem as it doesn't recognize bonds of x-type (extra-bonds).</p>
+        <p class="nt-description hidden" data-type="hin-empty">Save in HyperChem file format (*.hin) with empty graph (separate atoms).</p>
+    </div>
+    <fieldset class="nt-dialog-btns">
+        <a href="#" class="nt-apply" download="">Save</a>
+        <input type="button" class="nt-discard" value="Cancel"/>
+    </fieldset>
+</form>
+
+<form action="#" class="nt-dialog nt-transform-form hidden" autocomplete="off">
+    <h2>Transformation of coordinates</h2>
+    <fieldset class="nt-translate">
+        <legend>Translate</legend>
+        <p>Specify the new centroid coordinates</p>
+        <p>
+            <label><input type="text" data-axis="x"/><br/>X<sub>C</sub>, Å</label>
+            <label><input type="text" data-axis="y"/><br/>Y<sub>C</sub>, Å</label>
+            <label><input type="text" data-axis="z"/><br/>Z<sub>C</sub>, Å</label>
+            <input type="button" id="nt-translate-apply" value="&#x21A6;" title="Translate"/>
+        </p>
+    </fieldset>
+    <fieldset class="nt-rotate">
+        <legend>Rotate</legend>
+        <p>
+            <label for="nt-rotate-angle">Angle, deg</label><br/>
+            <input type="text" id="nt-rotate-angle"/>
+        </p>
+        <p>
+            <input type="button" data-axis="x" value="X"/>
+            <input type="button" data-axis="y" value="Y"/>
+            <input type="button" data-axis="z" value="Z"/>
+        </p>
+    </fieldset>
+    <fieldset class="nt-dialog-btns">
+        <input type="button" class="nt-discard" value="Close"/>
+    </fieldset>
+</form>
+
+<form action="#" class="nt-dialog nt-appearance-form hidden" autocomplete="off">
+    <h2>Appearance</h2>
+    <fieldset>
+        <legend>Model</legend>
+        <label><input type="radio" name="appearance" data-appearance="graph" checked/> Graph</label><br/>
+        <label><input type="radio" name="appearance" data-appearance="spheres"/> Spheres</label>
+    </fieldset>
+    <fieldset class="nt-appearance-colors">
+        <legend>Colors</legend>
+        <label>Element<br/><select id="nt-appearance-element"></select></label>
+        <label>Color<br/><input type="color" id="nt-appearance-color"/></label>
+        <hr/>
+        <label>Background <input type="color" id="nt-bg-color"/></label>
+    </fieldset>
+    <fieldset class="nt-dialog-btns">
+        <input type="button" class="nt-apply" value="OK"/>
+        <input type="button" class="nt-discard" value="Cancel"/>
+    </fieldset>
+</form>
+
+<div class="nt-dialog nt-info-dialog hidden">
+    <div class="nt-info-dialog-text"></div>
+    <p class="nt-dialog-btns">
+        <input type="button" class="nt-discard" value="Close"/>
+    </p>
+</div>
+
+<div id="nt-view"><canvas></canvas></div>
+
+<div class="nt-report hidden">
+    <p><progress id="nt-report-progress" value="0" max="100"></progress></p>
+    <dl id="nt-report-data"></dl>
+</div>
+
+<script src="../vendor/system.js"></script>
+<script>
+    System.config({
+        baseURL: "./js",
+        map: {
+            jquery: "../vendor/jquery.min.js",
+            _: "../vendor/lodash.min.js",
+            three: "../vendor/three.min.js"
+        },
+        meta: {
+            jquery: {format: "cjs"},
+            _: {format: "cjs"},
+            three: {format: "cjs"}
+        }
+    });
+    System.import("interface.amd.js");
+</script>
+</body>
+</html>

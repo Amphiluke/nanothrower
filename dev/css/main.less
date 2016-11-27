@@ -1,0 +1,34 @@
+@import (reference) "ui";
+
+@import (less) "../../node_modules/normalize.css/normalize.css";
+
+body {
+    font:normal percentage(unit((@root-font-size / 16))) ~"/" unit((@root-line-height / @root-font-size)) @base-font-family;
+}
+a {
+    color:@base-link-color;
+    &:hover {
+        text-decoration:none;
+    }
+}
+
+button, input, optgroup, select, textarea {
+    line-height:unit((@root-line-height / @root-font-size));
+}
+
+.hidden {
+    display:none;
+}
+
+.nt-description {
+    color:#808080;
+    font-size:0.85em;
+    line-height:1.2;
+}
+
+@import "view";
+@import "menu";
+@import "dialogs/dialogs";
+@import "dialogs/save";
+@import "dialogs/transform";
+@import "dialogs/appearance";

@@ -1,0 +1,8 @@
+.idea
+node_modules
+
+# Generated files
+dev/js/**/*.amd.js
+dev/css/**/*.css
+vendor/*
+!vendor/README.md
