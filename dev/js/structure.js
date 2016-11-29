@@ -8,6 +8,7 @@ import worker from "./worker.js";
  * @property {Number} x - X-coordinate of an atom
  * @property {Number} y - Y-coordinate of an atom
  * @property {Number} z - Z-coordinate of an atom
+ * @property {Number} mol - Index of a molecule an atom belongs to
  */
 
 /**

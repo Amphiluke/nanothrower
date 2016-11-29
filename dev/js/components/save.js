@@ -6,17 +6,9 @@ import structure from "../structure.js";
 import utils from "../utils.js";
 
 let save = Object.assign(new AbstractDialog(".nt-save-form"), {
-    handleTypeChange(e) {
-        this.$el.find(".type-description")
-            .addClass("hidden")
-            .filter(`[data-type="${e.target.value}"]`).removeClass("hidden");
-    },
-
     handleSave(e) {
-        let selected = $("#nt-file-type").find("option:selected"),
-            type = selected.closest("optgroup").data("type"),
-            graphType = selected.data("graph"),
-            file = fileAPI.makeFile(type, graphType);
+        let type = $("#nt-file-type").val(),
+            file = fileAPI.makeFile(type);
         if (file) {
             e.target.setAttribute("download", `untitled.${type}`);
             e.target.href = utils.getBlobURL(file);
@@ -25,7 +17,6 @@ let save = Object.assign(new AbstractDialog(".nt-save-form"), {
 });
 
 save.listen([
-    {type: "change", owner: "#nt-file-type", handler: "handleTypeChange"},
     {type: "click", filter: ".nt-apply", handler: "handleSave"}
 ]);
 

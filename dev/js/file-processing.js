@@ -7,13 +7,13 @@ formats.hin = {
     /* HIN file syntax defines the atom record as follows:
     atom <at#> <atom-name> <element> <type> <flags> <at-charge> <x> <y> <z> <cn> <nbor# nbor-bond>
      0     1        2          3       4       5         6       7   8   9   10         11... */
-    parseMolecule(atomRecords, result) {
+    parseMolecule(index, atomRecords, result) {
         let {atoms, bonds} = result,
             inc = atoms.length, // total number of atoms added into the structure previously
             spaceRE = /\s+/;
         for (let i = 0, len = atomRecords.length; i < len; i++) {
             let items = atomRecords[i].trim().split(spaceRE);
-            atoms.push({el: items[3], x: +items[7], y: +items[8], z: +items[9]});
+            atoms.push({el: items[3], x: +items[7], y: +items[8], z: +items[9], mol: index});
             for (let j = 11, cn = 2 * items[10] + 11; j < cn; j += 2) {
                 if (items[j] - 1 > i) {
                     bonds.push({
@@ -32,21 +32,58 @@ formats.hin = {
             result = {atoms: [], bonds: []},
             mol = molRE.exec(fileStr);
         while (mol) {
-            this.parseMolecule(mol[2].match(atmRE), result);
+            this.parseMolecule(mol[1] - 1, mol[2].match(atmRE), result);
             mol = molRE.exec(fileStr);
         }
         return result;
+    },
+
+    make() {
+        let atoms = structure.structure.atoms;
+        // Group existing atoms by their `mol` property
+        let molecules = [];
+        for (let [index, {mol}] of atoms.entries()) {
+            let molAtoms = molecules[mol] || (molecules[mol] = []);
+            molAtoms[molAtoms.length] = index;
+        }
+
+        // Get each atom's neighbours (in HIN format: <nbor# nbor-bond>)
+        let nbors = new Array(atoms.length);
+        for (let {type, iAtm, jAtm} of structure.structure.bonds) {
+            // Use relative atom indices (w.r.t. a containing molecule)
+            let iAtmIdx = molecules[atoms[iAtm].mol].indexOf(iAtm) + 1;
+            let jAtmIdx = molecules[atoms[jAtm].mol].indexOf(jAtm) + 1;
+            (nbors[iAtm] || (nbors[iAtm] = [])).push(`${jAtmIdx} ${type}`);
+            (nbors[jAtm] || (nbors[jAtm] = [])).push(`${iAtmIdx} ${type}`);
+        }
+
+        let hin = ";The structure was saved in Nanothrower\nforcefield mm+\n";
+        // Write mol records as required by the HIN format
+        for (let [molIndex, mol] of molecules.entries()) {
+            hin += `mol ${molIndex + 1}\n`;
+            for (let [molAtomIndex, atomIndex] of mol.entries()) {
+                let {el, x, y, z} = atoms[atomIndex];
+                let nbor = nbors[atomIndex];
+                hin += `atom ${molAtomIndex + 1} - ${el} ** - 0 ${x.toFixed(4)} ${y.toFixed(4)} ${z.toFixed(4)} ` +
+                    (nbor ? `${nbor.length} ${nbor.join(" ")}` : "0") + "\n";
+            }
+            hin += `endmol ${molIndex + 1}\n`;
+        }
+        return hin;
     }
 };
 
 formats.ml2 = formats.mol2 = {
+    // Map internal bond types to the SYBYL bond types used in MOL2
+    bondTypes: new Map([["s", "1"], ["d", "2"], ["t", "3"], ["a", "ar"]]),
+
     /* MOL2 file syntax defines the atom record as follows:
     atom_id atom_name x y z atom_type [subst_id [subst_name [charge [status_bit]]]]
        0        1     2 3 4     5         6          7         8         9
     MOL2 file syntax defines the bond record as follows:
     bond_id origin_atom_id target_atom_id bond_type [status_bits]
        0          1              2            3           4 */
-    parseMolecule(atomRecords, bondRecords, result) {
+    parseMolecule(index, atomRecords, bondRecords, result) {
         let {atoms, bonds} = result,
             inc = atoms.length, // total number of atoms added into the structure previously
             spaceRE = /\s+/;
@@ -57,15 +94,17 @@ formats.ml2 = formats.mol2 = {
                 el: (dotPos > -1) ? items[5].slice(0, dotPos) : items[5],
                 x: +items[2],
                 y: +items[3],
-                z: +items[4]
+                z: +items[4],
+                mol: index
             });
         }
         for (let rec of bondRecords) {
             let items = rec.trim().split(spaceRE);
+            let type = [...this.bondTypes].find(x => x[1] === items[3]);
             bonds.push({
                 iAtm: items[1] - 1 + inc,
                 jAtm: items[2] - 1 + inc,
-                type: items[3]
+                type: type && type[0] || "s"
             });
         }
     },
@@ -77,14 +116,54 @@ formats.ml2 = formats.mol2 = {
             bondRE = /@<TRIPOS>BOND([\s\S]+?)(?:@<TRIPOS>|$)/,
             newLineRE = /(?:\r?\n)+/,
             noRec = [];
-        for (let chunk of molChunks) {
+        for (let [index, chunk] of molChunks.entries()) {
             let atomSection = chunk.match(atomRE);
             let atomRecords = (atomSection && atomSection[1].trim().split(newLineRE)) || noRec;
             let bondSection = chunk.match(bondRE);
             let bondRecords = (bondSection && bondSection[1].trim().split(newLineRE)) || noRec;
-            this.parseMolecule(atomRecords, bondRecords, result);
+            this.parseMolecule(index, atomRecords, bondRecords, result);
         }
         return result;
+    },
+
+    make() {
+        let atoms = structure.structure.atoms;
+        // Group existing atoms by their `mol` property
+        let molecules = [];
+        for (let [index, {mol}] of atoms.entries()) {
+            let molAtoms = molecules[mol] || (molecules[mol] = []);
+            molAtoms[molAtoms.length] = index;
+        }
+
+        // Get each atom's neighbours (in MOL2 format: origin_atom_id target_atom_id bond_type)
+        let nbors = {};
+        for (let {type, iAtm, jAtm} of structure.structure.bonds) {
+            // Use relative atom indices (w.r.t. a containing molecule)
+            let iAtmIdx = molecules[atoms[iAtm].mol].indexOf(iAtm) + 1;
+            let jAtmIdx = molecules[atoms[jAtm].mol].indexOf(jAtm) + 1;
+            (nbors[iAtm] || (nbors[iAtm] = [])).push(`${iAtmIdx} ${jAtmIdx} ${this.bondTypes.get(type) || 1}`);
+        }
+
+        let ml2 = "# The structure was saved in Nanothrower\n";
+        // Write MOLECULE records as required by the MOL2 format
+        for (let mol of molecules) {
+            ml2 += `@<TRIPOS>MOLECULE\n****\n${mol.length} %BOND_COUNT%\nSMALL\nNO_CHARGES\n\n\n@<TRIPOS>ATOM\n`;
+            let bondRecs = [];
+            for (let [molAtomIndex, atomIndex] of mol.entries()) {
+                let {el, x, y, z} = atoms[atomIndex];
+                ml2 += `${molAtomIndex + 1} ${el} ${x.toFixed(4)} ${y.toFixed(4)} ${z.toFixed(4)} ${el} 1 **** 0.0000\n`;
+                if (nbors[atomIndex]) {
+                    bondRecs.push(...nbors[atomIndex]);
+                }
+            }
+            ml2 = ml2.replace("%BOND_COUNT%", bondRecs.length.toString());
+            ml2 += "@<TRIPOS>BOND\n";
+            for (let [bondIndex, bondRec] of bondRecs.entries()) {
+                ml2 += `${bondIndex + 1} ${bondRec}\n`;
+            }
+            ml2 += "@<TRIPOS>SUBSTRUCTURE\n1 **** 0\n";
+        }
+        return ml2;
     }
 };
 
@@ -105,6 +184,24 @@ formats.xyz = {
             atoms: atomRecords.map(this.parseAtomRecord, this),
             bonds: []
         };
+    },
+
+    make() {
+        let xyz = structure.structure.atoms.length + "\nThe structure was saved in Nanothrower";
+        for (let {el, x, y, z} of structure.structure.atoms) {
+            xyz += `\n${el} ${x.toFixed(5)} ${y.toFixed(5)} ${z.toFixed(5)}`;
+        }
+        return xyz;
+    }
+};
+
+formats.json = {
+    parse(fileStr) {
+        return JSON.parse(fileStr);
+    },
+
+    make() {
+        return JSON.stringify(structure.structure, null, 2);
     }
 };
 
@@ -122,78 +219,8 @@ export default {
         });
     },
 
-    makeFile(type, graphType) {
-        type = type.toUpperCase();
-        if (typeof this[`make${type}`] === "function") {
-            return this[`make${type}`](graphType);
-        }
-        return false;
-    },
-
-    makeHIN(graphType) {
-        let hin = ";The structure was saved in Nanothrower\nforcefield mm+\n";
-        if (graphType === "empty") {
-            let i = 0;
-            for (let {el, x, y, z} of structure.structure.atoms) {
-                hin += `mol ${++i}
-atom 1 - ${el} ** - 0 ${x.toFixed(4)} ${y.toFixed(4)} ${z.toFixed(4)} 0
-endmol ${i}
-`;
-            }
-        } else {
-            let nbors = new Array(structure.structure.atoms.length);
-            for (let {type, iAtm, jAtm} of structure.structure.bonds) {
-                if (graphType !== "basic" || type !== "x") {
-                    (nbors[iAtm] || (nbors[iAtm] = [])).push(`${jAtm + 1} ${type}`);
-                    (nbors[jAtm] || (nbors[jAtm] = [])).push(`${iAtm + 1} ${type}`);
-                }
-            }
-            hin += "mol 1\n"; // multiple molecule cases are not supported in this version
-            let i = -1;
-            for (let {el, x, y, z} of structure.structure.atoms) {
-                hin += `atom ${++i + 1} - ${el} ** - 0 ${x.toFixed(4)} ${y.toFixed(4)} ${z.toFixed(4)} ` +
-                    (nbors[i] ? `${nbors[i].length} ${nbors[i].join(" ")}` : "0") + "\n";
-            }
-            hin += "endmol 1";
-        }
-        return hin;
-    },
-
-    makeML2(graphType) {
-        let ml2 = `# The structure was saved in Nanothrower
-@<TRIPOS>MOLECULE
-****
-${structure.structure.atoms.length} %BOND_COUNT%
-SMALL
-NO_CHARGES
-
-
-@<TRIPOS>ATOM
-`; // bond count is TBD later
-        let i = 0;
-        for (let {el, x, y, z} of structure.structure.atoms) {
-            ml2 += `${++i} ${el} ${x.toFixed(4)} ${y.toFixed(4)} ${z.toFixed(4)} ${el} 1 **** 0.0000\n`;
-        }
-        let bondCount = 0;
-        if (graphType !== "empty") {
-            ml2 += "@<TRIPOS>BOND\n";
-            for (let {type, iAtm, jAtm} of structure.structure.bonds) {
-                if (graphType !== "basic" || type !== "x") {
-                    bondCount++;
-                    ml2 += `${bondCount} ${iAtm + 1} ${jAtm + 1} ${type}\n`;
-                }
-            }
-        }
-        ml2 += "@<TRIPOS>SUBSTRUCTURE\n1 **** 0";
-        ml2 = ml2.replace("%BOND_COUNT%", bondCount.toString());
-        return ml2;
-    },
-
-    makeXYZ() {
-        let xyz = structure.structure.atoms.length + "\nThe structure was saved in Nanothrower";
-        for (let {el, x, y, z} of structure.structure.atoms) {
-            xyz += `\n${el} ${x.toFixed(5)} ${y.toFixed(5)} ${z.toFixed(5)}`;
-        }
-        return xyz;
+    makeFile(type) {
+        let format = formats[type.toLowerCase()];
+        return format ? format.make() : false;
     }
 };
