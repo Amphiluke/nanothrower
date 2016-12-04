@@ -29,14 +29,13 @@
     <li>
         <button type="menu" value="Edit" menu="edit-menu"></button>
         <menu id="edit-menu" type="popup">
-            <menuitem label="Set parameters…" data-action="setup"></menuitem>
             <menuitem label="Transformation of coordinates…" data-action="transform"></menuitem>
         </menu>
     </li>
     <li>
         <button type="menu" value="Run" menu="run-menu"></button>
         <menu id="run-menu" type="popup">
-            <menuitem label="Run" data-action="run"></menuitem>
+            <menuitem label="Random rain…" data-action="rndRain"></menuitem>
         </menu>
     </li>
     <li>
@@ -93,6 +92,33 @@
     </fieldset>
 </form>
 
+<form action="#" class="nt-dialog nt-rnd-rain-form hidden" autocomplete="off">
+    <h2>Random rain</h2>
+    <div class="nt-rnd-rain-config">
+        <fieldset class="nt-distances">
+            <legend>Adhering distances (Å)</legend>
+            <div id="nt-distance-fields"></div>
+        </fieldset>
+        <fieldset class="nt-adsorb">
+            <legend>Adsorbate</legend>
+            <label><input type="checkbox" id="nt-adsorb-mol" checked> Molecular</label>
+            <label><input type="checkbox" id="nt-adsorb-birad" checked> Biradical</label>
+            <label class="label-right"><var>R</var><sub>H–H</sub>, Å <input type="text" id="nt-adsorb-r-hh" title="Interatomic distance in the H–H molecule" pattern="\d*\.?\d+([eE][+-]?\d+)?" required></label>
+            <label class="label-right"><var>N</var><sub id="nt-adsorb-count-mol">mol</sub><sub id="nt-adsorb-count-atm" class="hidden">atm</sub> <input type="number" id="nt-adsorb-count" min="1" step="1" title="Number of hydrogen atoms or molecules to add" required></label>
+        </fieldset>
+        <fieldset class="nt-sphere">
+            <legend>Hydrogen source surface</legend>
+            <label><input type="radio" name="nt-src-mode" value="sphere" checked> Sphere</label>
+            <label><input type="radio" name="nt-src-mode" value="hemisphere"> Hemisphere</label>
+            <label class="label-right"><var>R</var><sub>sph</sub>, Å <input type="text" id="nt-sphere-radius" title="Sphere radius" pattern="\d*\.?\d+([eE][+-]?\d+)?" required></label>
+        </fieldset>
+    </div>
+    <fieldset class="nt-dialog-btns">
+        <input type="button" class="nt-apply" value="OK"/>
+        <input type="button" class="nt-discard" value="Cancel"/>
+    </fieldset>
+</form>
+
 <form action="#" class="nt-dialog nt-appearance-form hidden" autocomplete="off">
     <h2>Appearance</h2>
     <fieldset>
@@ -122,10 +148,7 @@
 
 <div id="nt-view"><canvas></canvas></div>
 
-<div class="nt-report hidden">
-    <p><progress id="nt-report-progress" value="0" max="100"></progress></p>
-    <dl id="nt-report-data"></dl>
-</div>
+<div class="nt-progress" id="nt-progress"></div>
 
 <script src="../vendor/system.js"></script>
 <script>
@@ -133,12 +156,10 @@
         baseURL: "./js",
         map: {
             jquery: "../vendor/jquery.min.js",
-            _: "../vendor/lodash.min.js",
             three: "../vendor/three.min.js"
         },
         meta: {
             jquery: {format: "cjs"},
-            _: {format: "cjs"},
             three: {format: "cjs"}
         }
     });

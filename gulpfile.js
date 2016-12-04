@@ -6,7 +6,6 @@ let gulp = require("gulp"),
     babel = require("gulp-babel"),
     less = require("gulp-less"),
     LessPluginCleanCSS = require("less-plugin-clean-css"),
-    files2JSON = require("gulp-files-to-json"),
     Builder = require("systemjs-builder");
 
 gulp.task("dependencies", () => {
@@ -42,13 +41,6 @@ gulp.task("html", () => {
         .pipe(gulp.dest("build/"));
 });
 
-gulp.task("tpl", () => {
-    return gulp.src("dev/tpl/*.html")
-        .pipe(files2JSON("tpl.json"))
-        .pipe(gulp.dest("dev/tpl/"))
-        .pipe(gulp.dest("build/tpl/"));
-});
-
 gulp.task("styles", () => {
     let cleanCSS = new LessPluginCleanCSS({advanced: true});
     return gulp.src("dev/css/main.less")
@@ -79,4 +71,4 @@ gulp.task("bundle", ["transpile"], () => {
     return builder.bundle("interface.amd.js", "build/js/interface.amd.js");
 });
 
-gulp.task("build", ["html", "tpl", "styles", "images", "detachedScripts", "bundle"]);
+gulp.task("build", ["html", "styles", "images", "detachedScripts", "bundle"]);

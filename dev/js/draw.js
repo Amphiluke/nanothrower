@@ -235,11 +235,11 @@ let draw = {
         }
     },
 
-    addWireSphere({cx, cy, cz, radius, color = 0xFFFFFF}) {
+    addWireSphere({cx, cy, cz, r, color = 0xFFFFFF}) {
         let sphere = this.wireSphere;
         if (!sphere) {
             sphere = this.wireSphere = new THREE.Mesh(
-                new THREE.SphereGeometry(radius, 15, 15),
+                new THREE.SphereGeometry(r, 15, 15),
                 new THREE.MeshBasicMaterial({color, wireframe: true})
             );
             sphere.position.x = cx;

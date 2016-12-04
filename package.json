@@ -4,10 +4,9 @@
   "description": "Model hydrogen adsorption on the surface of nanostructures based on the “Random rain” algorithm",
   "main": "index.js",
   "scripts": {
-    "postinstall": "gulp prepare & lodash exports=umd include=template -o vendor/lodash.js",
+    "postinstall": "gulp prepare",
     "build": "gulp build",
-    "transpile": "gulp transpile",
-    "tpl": "gulp tpl"
+    "transpile": "gulp transpile"
   },
   "repository": {
     "type": "git",
@@ -28,7 +27,6 @@
   "homepage": "https://github.com/Amphiluke/nanothrower#readme",
   "dependencies": {
     "jquery": "^3.1.1",
-    "lodash": "^4.17.2",
     "normalize.css": "^5.0.0",
     "systemjs": "^0.19.41",
     "three": "^0.82.1"
@@ -38,12 +36,10 @@
     "eslint": "^3.10.2",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
-    "gulp-files-to-json": "^0.2.1",
     "gulp-less": "^3.3.0",
     "gulp-rename": "^1.2.2",
     "gulp-replace": "^0.5.4",
     "less-plugin-clean-css": "^1.5.1",
-    "lodash-cli": "^4.17.1",
     "systemjs-builder": "^0.15.34"
   }
 }

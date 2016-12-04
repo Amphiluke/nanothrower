@@ -1,0 +1,49 @@
+@import (reference) "../ui";
+
+.nt-rnd-rain-form {
+    border-color:@border-light-color;
+    border-radius:0 0 0 5px;
+    border-width:0 0 1px 1px;
+    left:auto;
+    margin-left:0;
+    right:0;
+    top:@root-line-height + 3px * 2 + 1px; // top menu height
+    width:250px;
+    z-index:1;
+    &:before {
+        content:none;
+    }
+}
+
+.nt-rnd-rain-config {
+    fieldset {
+        margin:0;
+
+        label {
+            display:block;
+            margin-top:0.25em;
+            &:first-child {
+                margin-top:0;
+            }
+
+            input[type="text"],
+            input[type="number"] {
+                width:150px;
+            }
+       }
+    }
+
+    .label-right {
+        text-align:right;
+    }
+}
+
+.nt-distances {
+    label[data-el] {
+        text-align:right;
+
+        &:before {
+            content:attr(data-el) "-H ";
+        }
+    }
+}
