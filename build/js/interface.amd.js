@@ -142,6 +142,7 @@ define("components/rnd-rain.amd.js", ["exports", "jquery", "../structure.amd.js"
       let captureDistances = new Map((0, _jquery2.default)("#nt-distance-fields").find("label[data-el]").get().map((label) => {
         return [(0, _jquery2.default)(label).data("el"), Number((0, _jquery2.default)("input", label).val())];
       }));
+      captureDistances.set("H1", captureDistances.get("H"));
       _workerAmd2.default.invoke("run", {
         mode: this.$el.find("input[name='nt-src-mode']").filter(":checked").val(),
         molecular: (0, _jquery2.default)("#nt-adsorb-mol").prop("checked"),
