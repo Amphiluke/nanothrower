@@ -32,6 +32,7 @@ let rndRain = Object.assign(new AbstractDialog(".nt-rnd-rain-form"), {
         let captureDistances = new Map($("#nt-distance-fields").find("label[data-el]").get().map(label => {
             return [$(label).data("el"), Number($("input", label).val())];
         }));
+        captureDistances.set("H1", captureDistances.get("H"));
         worker.invoke("run", {
             mode: this.$el.find("input[name='nt-src-mode']").filter(":checked").val(),
             molecular: $("#nt-adsorb-mol").prop("checked"),
