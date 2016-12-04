@@ -54,7 +54,7 @@ gulp.task("images", () => {
 });
 
 gulp.task("detachedScripts", () => {
-    return gulp.src(["dev/js/calc.js"])
+    return gulp.src(["dev/js/rr-worker.js"])
         .pipe(gulp.dest("build/js/"));
 });
 
@@ -64,7 +64,6 @@ gulp.task("bundle", ["transpile"], () => {
         baseURL: "dev/js",
         meta: {
             jquery: {build: false},
-            _: {build: false},
             three: {build: false}
         }
     });
