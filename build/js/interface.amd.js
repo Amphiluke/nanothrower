@@ -40,6 +40,252 @@ define("components/save.amd.js", ["exports", "jquery", "./abstract-dialog.amd.js
 })();
 (function() {
 var define = System.amdDefine;
+define("assembly/graphene.amd.js", ["exports"], function(exports) {
+  "use strict";
+  Object.defineProperty(exports, "__esModule", {value: true});
+  let graphene = {
+    create(settings) {
+      return {
+        name: "Graphene",
+        atoms: this.makeAtoms(settings),
+        bonds: this.makeBonds(settings)
+      };
+    },
+    makeAtoms({width,
+      height,
+      rCC}) {
+      let nx2 = 2 * Math.round(width / (Math.sqrt(3) * rCC)),
+          layerCount = Math.round(2 * height / (3 * rCC)),
+          atomCount = (nx2 + 1) * layerCount,
+          halfRCC = rCC / 2,
+          halfHexWidth = Math.sqrt(3) * halfRCC,
+          layerHeight = 3 * halfRCC,
+          atoms = new Array(atomCount),
+          atomIndex = 0;
+      for (let t = 0; t < layerCount; t++) {
+        let factorT = t % 2;
+        for (let i = 0; i <= nx2; i++, atomIndex++) {
+          atoms[atomIndex] = {
+            el: "C",
+            x: halfHexWidth * i,
+            y: t * layerHeight + (i % 2 === factorT ? halfRCC : 0),
+            z: 0,
+            mol: 0
+          };
+        }
+      }
+      return atoms;
+    },
+    makeBonds({width,
+      height,
+      rCC}) {
+      let nx2 = 2 * Math.round(width / (Math.sqrt(3) * rCC)),
+          layerCount = Math.round(2 * height / (3 * rCC)),
+          atomsPerLayer = nx2 + 1,
+          atomCount = atomsPerLayer * layerCount,
+          bonds = [];
+      for (let i = 0; i < atomCount - 1; i++) {
+        if ((i + 1) % atomsPerLayer) {
+          bonds.push({
+            iAtm: i,
+            jAtm: i + 1,
+            type: "a"
+          });
+        }
+        if (i % 2 === 0) {
+          let nextLayerNeighbor = i + atomsPerLayer;
+          if (nextLayerNeighbor < atomCount) {
+            bonds.push({
+              iAtm: i,
+              jAtm: nextLayerNeighbor,
+              type: "a"
+            });
+          }
+        }
+      }
+      return bonds;
+    }
+  };
+  exports.default = graphene.create.bind(graphene);
+});
+
+})();
+(function() {
+var define = System.amdDefine;
+define("components/graphene.amd.js", ["exports", "jquery", "../structure.amd.js", "../app.amd.js", "./abstract-dialog.amd.js", "../assembly/graphene.amd.js"], function(exports, _jquery, _structureAmd, _appAmd, _abstractDialogAmd, _grapheneAmd) {
+  "use strict";
+  Object.defineProperty(exports, "__esModule", {value: true});
+  var _jquery2 = _interopRequireDefault(_jquery);
+  var _structureAmd2 = _interopRequireDefault(_structureAmd);
+  var _appAmd2 = _interopRequireDefault(_appAmd);
+  var _abstractDialogAmd2 = _interopRequireDefault(_abstractDialogAmd);
+  var _grapheneAmd2 = _interopRequireDefault(_grapheneAmd);
+  function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {default: obj};
+  }
+  let graphene = Object.assign(new _abstractDialogAmd2.default(".nt-graphene-form"), {
+    handleApply() {
+      if (this.$el[0].checkValidity()) {
+        return Object.getPrototypeOf(this).handleApply.apply(this, arguments);
+      } else {
+        window.alert("Please, fix invalid input first");
+      }
+    },
+    apply() {
+      this.fix();
+      _structureAmd2.default.overwrite((0, _grapheneAmd2.default)({
+        width: Number((0, _jquery2.default)("#graphene-width").val()),
+        height: Number((0, _jquery2.default)("#graphene-height").val()),
+        rCC: Number((0, _jquery2.default)("#graphene-rcc").val())
+      }));
+      _structureAmd2.default.translate(0, 0, 0);
+    }
+  });
+  exports.default = graphene;
+  _appAmd2.default.addAction("graphene", {
+    get enabled() {
+      return true;
+    },
+    exec() {
+      graphene.show();
+    }
+  });
+});
+
+})();
+(function() {
+var define = System.amdDefine;
+define("assembly/nanotube.amd.js", ["exports"], function(exports) {
+  "use strict";
+  Object.defineProperty(exports, "__esModule", {value: true});
+  let nanotube = {
+    create(settings) {
+      return {
+        name: "Nanotube",
+        atoms: this.makeAtoms(settings),
+        bonds: this.makeBonds(settings)
+      };
+    },
+    makeAtoms({radius,
+      length,
+      rCC}) {
+      let factor = rCC / radius;
+      let nx = Math.round(2 * Math.PI / Math.acos(1 - 1.5 * factor * factor));
+      radius = 0.5 * Math.sqrt(3) * rCC / Math.sin(Math.PI / nx);
+      let theta = 2 * Math.PI / nx;
+      factor = radius * (1 - Math.cos(theta / 2));
+      let dz = Math.sqrt(rCC * rCC / 4 - factor * factor);
+      let layerCount = Math.round(length / (rCC + dz));
+      let atomCount = 2 * nx * layerCount;
+      let halfTheta = theta / 2;
+      let atoms = new Array(atomCount);
+      let atomIndex = 0;
+      for (let t = 0; t < layerCount; t++) {
+        let factorT = t % 2;
+        for (let i = 0; i < 2 * nx; i++, atomIndex++) {
+          atoms[atomIndex] = {
+            el: "C",
+            x: radius * Math.cos(halfTheta * i),
+            y: radius * Math.sin(halfTheta * i),
+            z: t * (rCC + dz) + (i % 2 ^ factorT) * dz,
+            mol: 0
+          };
+        }
+      }
+      return atoms;
+    },
+    makeBonds({radius,
+      length,
+      rCC}) {
+      let factor = rCC / radius;
+      let nx = Math.round(2 * Math.PI / Math.acos(1 - 1.5 * factor * factor));
+      radius = 0.5 * Math.sqrt(3) * rCC / Math.sin(Math.PI / nx);
+      let theta = 2 * Math.PI / nx;
+      factor = radius * (1 - Math.cos(theta / 2));
+      let dz = Math.sqrt(rCC * rCC / 4 - factor * factor);
+      let layerCount = Math.round(length / (rCC + dz));
+      let atomsPerLayer = 2 * nx;
+      let atomCount = atomsPerLayer * layerCount;
+      let bonds = [];
+      for (let i = 0; i < atomCount; i++) {
+        if ((i + 1) % atomsPerLayer) {
+          bonds.push({
+            iAtm: i,
+            jAtm: i + 1,
+            type: "a"
+          });
+        } else {
+          bonds.push({
+            iAtm: i,
+            jAtm: i + 1 - atomsPerLayer,
+            type: "a"
+          });
+        }
+        let layerParity = Math.trunc(i / atomsPerLayer) % 2;
+        let atomParity = i % 2;
+        if (layerParity ^ atomParity) {
+          let nextLayerNeighbor = i + atomsPerLayer;
+          if (nextLayerNeighbor < atomCount) {
+            bonds.push({
+              iAtm: i,
+              jAtm: nextLayerNeighbor,
+              type: "a"
+            });
+          }
+        }
+      }
+      return bonds;
+    }
+  };
+  exports.default = nanotube.create.bind(nanotube);
+});
+
+})();
+(function() {
+var define = System.amdDefine;
+define("components/nanotube.amd.js", ["exports", "jquery", "../structure.amd.js", "../app.amd.js", "./abstract-dialog.amd.js", "../assembly/nanotube.amd.js"], function(exports, _jquery, _structureAmd, _appAmd, _abstractDialogAmd, _nanotubeAmd) {
+  "use strict";
+  Object.defineProperty(exports, "__esModule", {value: true});
+  var _jquery2 = _interopRequireDefault(_jquery);
+  var _structureAmd2 = _interopRequireDefault(_structureAmd);
+  var _appAmd2 = _interopRequireDefault(_appAmd);
+  var _abstractDialogAmd2 = _interopRequireDefault(_abstractDialogAmd);
+  var _nanotubeAmd2 = _interopRequireDefault(_nanotubeAmd);
+  function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {default: obj};
+  }
+  let nanotube = Object.assign(new _abstractDialogAmd2.default(".nt-nanotube-form"), {
+    handleApply() {
+      if (this.$el[0].checkValidity()) {
+        return Object.getPrototypeOf(this).handleApply.apply(this, arguments);
+      } else {
+        window.alert("Please, fix invalid input first");
+      }
+    },
+    apply() {
+      this.fix();
+      _structureAmd2.default.overwrite((0, _nanotubeAmd2.default)({
+        radius: Number((0, _jquery2.default)("#nanotube-radius").val()),
+        length: Number((0, _jquery2.default)("#nanotube-length").val()),
+        rCC: Number((0, _jquery2.default)("#graphene-rcc").val())
+      }));
+      _structureAmd2.default.translate(0, 0, 0);
+    }
+  });
+  exports.default = nanotube;
+  _appAmd2.default.addAction("nanotube", {
+    get enabled() {
+      return true;
+    },
+    exec() {
+      nanotube.show();
+    }
+  });
+});
+
+})();
+(function() {
+var define = System.amdDefine;
 define("components/transform.amd.js", ["exports", "jquery", "./abstract-dialog.amd.js", "../app.amd.js", "../structure.amd.js", "../draw.amd.js"], function(exports, _jquery, _abstractDialogAmd, _appAmd, _structureAmd, _drawAmd) {
   "use strict";
   Object.defineProperty(exports, "__esModule", {value: true});
@@ -99,6 +345,35 @@ define("components/transform.amd.js", ["exports", "jquery", "./abstract-dialog.a
     },
     exec() {
       transform.show();
+    }
+  });
+});
+
+})();
+(function() {
+var define = System.amdDefine;
+define("components/bn-convert.amd.js", ["../app.amd.js", "../structure.amd.js"], function(_appAmd, _structureAmd) {
+  "use strict";
+  var _appAmd2 = _interopRequireDefault(_appAmd);
+  var _structureAmd2 = _interopRequireDefault(_structureAmd);
+  function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {default: obj};
+  }
+  let bnConvert = {convert() {
+      let atoms = _structureAmd2.default.structure.atoms;
+      let bnAtoms = new Array(atoms.length);
+      for (let [index, atom] of atoms.entries()) {
+        bnAtoms[index] = Object.assign({}, atom);
+        bnAtoms[index].el = index % 2 ? "B" : "N";
+      }
+      _structureAmd2.default.overwrite(Object.assign({}, _structureAmd2.default.structure, {atoms: bnAtoms}));
+    }};
+  _appAmd2.default.addAction("bnConvert", {
+    get enabled() {
+      return _structureAmd2.default.structure.atoms.length > 0;
+    },
+    exec() {
+      bnConvert.convert();
     }
   });
 });
@@ -204,6 +479,10 @@ define("components/rnd-rain.amd.js", ["exports", "jquery", "../structure.amd.js"
   }, {
     type: "app:structure:loaded",
     owner: _appAmd2.default,
+    handler: "resetHTML"
+  }, {
+    type: "updateStructure",
+    owner: _structureAmd2.default,
     handler: "resetHTML"
   }, {
     type: "progress",
@@ -882,6 +1161,8 @@ define("draw.amd.js", ["exports", "three", "./cacheable.amd.js", "./structure.am
       })}});
   presets.set("C", {color: 0xFF0000});
   presets.set("H", {radius: 0.7});
+  presets.set("B", {color: 0xFFFF00});
+  presets.set("N", {color: 0x0000FF});
   let pointMaterials = new _cacheableAmd2.default((atom) => {
     let preset = presets.get(atom);
     return new THREE.PointsMaterial({
@@ -1496,7 +1777,7 @@ define("components/view.amd.js", ["exports", "../eventful.amd.js", "../app.amd.j
 })();
 (function() {
 var define = System.amdDefine;
-define("interface.amd.js", ["./structure.amd.js", "./app.amd.js", "./components/save.amd.js", "./components/transform.amd.js", "./components/rnd-rain.amd.js", "./components/appearance.amd.js", "./components/menu.amd.js", "./components/view.amd.js"], function(_structureAmd, _appAmd) {
+define("interface.amd.js", ["./structure.amd.js", "./app.amd.js", "./components/save.amd.js", "./components/graphene.amd.js", "./components/nanotube.amd.js", "./components/transform.amd.js", "./components/bn-convert.amd.js", "./components/rnd-rain.amd.js", "./components/appearance.amd.js", "./components/menu.amd.js", "./components/view.amd.js"], function(_structureAmd, _appAmd) {
   "use strict";
   var _structureAmd2 = _interopRequireDefault(_structureAmd);
   var _appAmd2 = _interopRequireDefault(_appAmd);

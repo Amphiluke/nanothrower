@@ -22,14 +22,13 @@
         <menu id="make-menu" type="popup">
             <menuitem label="Create graphene…" data-action="graphene"></menuitem>
             <menuitem label="Create nanotube…" data-action="nanotube"></menuitem>
-            <hr/>
-            <menuitem label="Convert to BN" data-action="bnConvert"></menuitem>
         </menu>
     </li>
     <li>
         <button type="menu" value="Edit" menu="edit-menu"></button>
         <menu id="edit-menu" type="popup">
             <menuitem label="Transformation of coordinates…" data-action="transform"></menuitem>
+            <menuitem label="Convert to BN" data-action="bnConvert"></menuitem>
         </menu>
     </li>
     <li>
@@ -59,6 +58,34 @@
     </p>
     <fieldset class="nt-dialog-btns">
         <a href="#" class="nt-apply" download="">Save</a>
+        <input type="button" class="nt-discard" value="Cancel"/>
+    </fieldset>
+</form>
+
+<form action="#" class="nt-dialog nt-graphene-form hidden" autocomplete="off">
+    <h2>Create graphene</h2>
+    <fieldset>
+        <legend>Graphene parameters</legend>
+        <label><var>L<sub>x</sub></var>, Å <input type="text" id="graphene-width" title="Width of a graphene sheet" pattern="\d*\.?\d+([eE][+-]?\d+)?" value="30" required></label>
+        <label><var>L<sub>y</sub></var>, Å <input type="text" id="graphene-height" title="Height of a graphene sheet" pattern="\d*\.?\d+([eE][+-]?\d+)?" value="30" required></label>
+        <label><var>R</var><sub>C–C</sub>, Å <input type="text" id="graphene-rcc" title="Equilibrium distance in C–C pair" pattern="\d*\.?\d+([eE][+-]?\d+)?" value="1.42" required></label>
+    </fieldset>
+    <fieldset class="nt-dialog-btns">
+        <input type="button" class="nt-apply" value="Create"/>
+        <input type="button" class="nt-discard" value="Cancel"/>
+    </fieldset>
+</form>
+
+<form action="#" class="nt-dialog nt-nanotube-form hidden" autocomplete="off">
+    <h2>Create nanotube</h2>
+    <fieldset>
+        <legend>Nanotube parameters</legend>
+        <label><var>R</var>, Å <input type="text" id="nanotube-radius" title="Radius of a nanotube" pattern="\d*\.?\d+([eE][+-]?\d+)?" value="10" required></label>
+        <label><var>L</var>, Å <input type="text" id="nanotube-length" title="Length of a graphene sheet" pattern="\d*\.?\d+([eE][+-]?\d+)?" value="30" required></label>
+        <label><var>R</var><sub>C–C</sub>, Å <input type="text" id="nanotube-rcc" title="Equilibrium distance in C–C pair" pattern="\d*\.?\d+([eE][+-]?\d+)?" value="1.42" required></label>
+    </fieldset>
+    <fieldset class="nt-dialog-btns">
+        <input type="button" class="nt-apply" value="Create"/>
         <input type="button" class="nt-discard" value="Cancel"/>
     </fieldset>
 </form>
@@ -138,13 +165,6 @@
         <input type="button" class="nt-discard" value="Cancel"/>
     </fieldset>
 </form>
-
-<div class="nt-dialog nt-info-dialog hidden">
-    <div class="nt-info-dialog-text"></div>
-    <p class="nt-dialog-btns">
-        <input type="button" class="nt-discard" value="Close"/>
-    </p>
-</div>
 
 <div id="nt-view"><canvas></canvas></div>
 
