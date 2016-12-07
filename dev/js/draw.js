@@ -21,6 +21,8 @@ let presets = Object.create({
 
 presets.set("C", {color: 0xFF0000});
 presets.set("H", {radius: 0.7});
+presets.set("B", {color: 0xFFFF00});
+presets.set("N", {color: 0x0000FF});
 
 
 let pointMaterials = new Cacheable(atom => {

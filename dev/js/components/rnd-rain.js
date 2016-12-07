@@ -89,6 +89,7 @@ rndRain.listen([
     {type: "change", owner: "#nt-sphere-radius", handler: "handleRadiusChange"},
 
     {type: "app:structure:loaded", owner: app, handler: "resetHTML"},
+    {type: "updateStructure", owner: structure, handler: "resetHTML"},
     {type: "progress", owner: worker, handler: "updateProgress"},
     {type: "run", owner: worker, handler: "updateStructure"}
 ]);

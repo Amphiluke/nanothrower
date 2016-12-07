@@ -1,7 +1,10 @@
 import structure from "./structure.js";
 import app from "./app.js";
 import "./components/save.js";
+import "./components/graphene.js";
+import "./components/nanotube.js";
 import "./components/transform.js";
+import "./components/bn-convert.js";
 import "./components/rnd-rain.js";
 import "./components/appearance.js";
 import "./components/menu.js";
