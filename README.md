@@ -1,6 +1,6 @@
 # Nanothrower
 
-![Nanothrower - cannon](https://amphiluke.github.io/nanothrower/img/cannon.png)
+![Nanothrower logo](https://amphiluke.github.io/nanothrower/img/logo.png)
 
 Model hydrogen adsorption on the surface of nanostructures based on the “Random rain” algorithm.
 
