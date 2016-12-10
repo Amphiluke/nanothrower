@@ -3,11 +3,18 @@ import structure from "../structure.js";
 
 let bnConvert = {
     convert() {
-        let atoms = structure.structure.atoms;
-        let bnAtoms = new Array(atoms.length);
-        for (let [index, atom] of atoms.entries()) {
-            bnAtoms[index] = Object.assign({}, atom);
-            bnAtoms[index].el = (index % 2) ? "B" : "N";
+        let bnAtoms = JSON.parse(JSON.stringify(structure.structure.atoms));
+        for (let {iAtm, jAtm} of structure.structure.bonds) {
+            let iEl = bnAtoms[iAtm].el;
+            let jEl = bnAtoms[jAtm].el;
+            if (iEl === "C" && jEl === "C") {
+                bnAtoms[iAtm].el = "B";
+                bnAtoms[jAtm].el = "N";
+            } else if (iEl === "C") {
+                bnAtoms[iAtm].el = (jEl === "B") ? "N" : "B";
+            } else if (jEl === "C") {
+                bnAtoms[jAtm].el = (iEl === "B") ? "N" : "B";
+            }
         }
         structure.overwrite(Object.assign({}, structure.structure, {atoms: bnAtoms}));
     }
