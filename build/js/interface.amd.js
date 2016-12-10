@@ -360,11 +360,19 @@ define("components/bn-convert.amd.js", ["../app.amd.js", "../structure.amd.js"],
     return obj && obj.__esModule ? obj : {default: obj};
   }
   let bnConvert = {convert() {
-      let atoms = _structureAmd2.default.structure.atoms;
-      let bnAtoms = new Array(atoms.length);
-      for (let [index, atom] of atoms.entries()) {
-        bnAtoms[index] = Object.assign({}, atom);
-        bnAtoms[index].el = index % 2 ? "B" : "N";
+      let bnAtoms = JSON.parse(JSON.stringify(_structureAmd2.default.structure.atoms));
+      for (let {iAtm,
+        jAtm} of _structureAmd2.default.structure.bonds) {
+        let iEl = bnAtoms[iAtm].el;
+        let jEl = bnAtoms[jAtm].el;
+        if (iEl === "C" && jEl === "C") {
+          bnAtoms[iAtm].el = "B";
+          bnAtoms[jAtm].el = "N";
+        } else if (iEl === "C") {
+          bnAtoms[iAtm].el = jEl === "B" ? "N" : "B";
+        } else if (jEl === "C") {
+          bnAtoms[jAtm].el = iEl === "B" ? "N" : "B";
+        }
       }
       _structureAmd2.default.overwrite(Object.assign({}, _structureAmd2.default.structure, {atoms: bnAtoms}));
     }};
