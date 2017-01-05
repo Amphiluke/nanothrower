@@ -21,7 +21,7 @@
  * @property {Boolean} molecular - Use molecular hydrogen (true) or atomic (false)
  * @property {Boolean} biradical - Use hydrogen biradicals (only for the case of molecular=true)
  * @property {Number} rHH - Distance between H atoms in a molecule (only for the case of molecular=true)
- * @property {Number} hCount - A number of H atoms or H-H molecules to be injected
+ * @property {Number} hCount - A number of H atoms to be injected
  * @property {Sphere} sphere - Wrapping sphere parameters
  * @property {Map} captureDistances - Maps element names to maximum capture distances
  * @property {Structure} structure - Target working structure
@@ -107,10 +107,11 @@ let core = {
             let pt = this.sqrDistance(stopPts[0], startPt) < this.sqrDistance(stopPts[1], startPt) ? stopPts[0] : stopPts[1];
             if (molecular) {
                 this.adhereHH(pt);
+                currentHCount += 2;
             } else {
                 this.adhereH(pt);
+                currentHCount++;
             }
-            currentHCount++;
             progressMsg.data = 100 * currentHCount / hCount;
             self.postMessage(progressMsg);
         }
