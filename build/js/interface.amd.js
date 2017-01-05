@@ -389,7 +389,165 @@ define("components/bn-convert.amd.js", ["../app.amd.js", "../structure.amd.js"],
 })();
 (function() {
 var define = System.amdDefine;
-define("components/rnd-rain.amd.js", ["exports", "jquery", "../structure.amd.js", "../app.amd.js", "./abstract-dialog.amd.js", "../worker.amd.js", "../draw.amd.js"], function(exports, _jquery, _structureAmd, _appAmd, _abstractDialogAmd, _workerAmd, _drawAmd) {
+define("chem.amd.js", ["exports"], function(exports) {
+  "use strict";
+  Object.defineProperty(exports, "__esModule", {value: true});
+  let atomicMasses = {
+    H: 1.00794,
+    H1: 1.00794,
+    He: 4.002602,
+    Li: 6.941,
+    Be: 9.01218,
+    B: 10.811,
+    C: 12.011,
+    N: 14.0067,
+    O: 15.9994,
+    F: 18.998403,
+    Ne: 20.179,
+    Na: 22.98977,
+    Mg: 24.305,
+    Al: 26.98154,
+    Si: 28.0855,
+    P: 30.97376,
+    S: 32.066,
+    Cl: 35.453,
+    Ar: 39.948,
+    K: 39.0983,
+    Ca: 40.078,
+    Sc: 44.95591,
+    Ti: 47.88,
+    V: 50.9415,
+    Cr: 51.9961,
+    Mn: 54.938,
+    Fe: 55.847,
+    Co: 58.9332,
+    Ni: 58.69,
+    Cu: 63.546,
+    Zn: 65.39,
+    Ga: 69.723,
+    Ge: 72.59,
+    As: 74.9216,
+    Se: 78.96,
+    Br: 79.904,
+    Kr: 83.8,
+    Rb: 85.4678,
+    Sr: 87.62,
+    Y: 88.9059,
+    Zr: 91.224,
+    Nb: 92.9064,
+    Mo: 95.94,
+    Tc: 97.9072,
+    Ru: 101.07,
+    Rh: 102.9055,
+    Pd: 106.42,
+    Ag: 107.8682,
+    Cd: 112.41,
+    In: 114.82,
+    Sn: 118.71,
+    Sb: 121.75,
+    Te: 127.6,
+    I: 126.9045,
+    Xe: 131.29,
+    Cs: 132.9054,
+    Ba: 137.33,
+    La: 138.9055,
+    Ce: 140.12,
+    Pr: 140.9077,
+    Nd: 144.24,
+    Pm: 144.9128,
+    Sm: 150.36,
+    Eu: 151.96,
+    Gd: 157.25,
+    Tb: 158.9254,
+    Dy: 162.5,
+    Ho: 164.9304,
+    Er: 167.26,
+    Tm: 168.9342,
+    Yb: 173.04,
+    Lu: 174.967,
+    Hf: 178.49,
+    Ta: 180.9479,
+    W: 183.85,
+    Re: 186.207,
+    Os: 190.2,
+    Ir: 192.22,
+    Pt: 195.08,
+    Au: 196.9665,
+    Hg: 200.59,
+    Tl: 204.383,
+    Pb: 207.2,
+    Bi: 208.9804,
+    Po: 208.9824,
+    At: 209.9871,
+    Rn: 222.0176,
+    Fr: 223.0197,
+    Ra: 226.0254,
+    Ac: 227.0278,
+    Th: 232.0381,
+    Pa: 231.0359,
+    U: 238.0289,
+    Np: 237.0482,
+    Pu: 244.0642,
+    Am: 243.0614,
+    Cm: 247.0703,
+    Bk: 247.0703,
+    Cf: 251.0796,
+    Es: 252.0828,
+    Fm: 257.0951,
+    Md: 258.0986,
+    No: 259.1009,
+    Lr: 260.1054,
+    Rf: 261,
+    Db: 262,
+    Sg: 263,
+    Bh: 262,
+    Hs: 265,
+    Mt: 266
+  };
+  exports.default = {
+    getAtomicMass(el) {
+      return atomicMasses[el];
+    },
+    countAtoms(atoms, el = "H") {
+      let count = 0;
+      let elAlias = `${el}1`;
+      for (let {el: currEl} of atoms) {
+        if (currEl === el || currEl === elAlias) {
+          count++;
+        }
+      }
+      return count;
+    },
+    getConcentration(atoms, el = "H") {
+      let totalMass = 0;
+      let elMass = 0;
+      let elAlias = `${el}1`;
+      for (let {el: currEl} of atoms) {
+        let atomicMass = atomicMasses[currEl];
+        totalMass += atomicMass;
+        if (currEl === el || currEl === elAlias) {
+          elMass += atomicMass;
+        }
+      }
+      return elMass / totalMass;
+    },
+    conToNum(atoms, con, el = "H") {
+      let restMass = 0;
+      let elAlias = `${el}1`;
+      for (let {el: currEl} of atoms) {
+        if (currEl !== el && currEl !== elAlias) {
+          restMass += atomicMasses[currEl];
+        }
+      }
+      return Math.round(con * restMass / ((1 - con) * atomicMasses[el]));
+    }
+  };
+});
+
+})();
+(function() {
+var define = System.amdDefine;
+define("components/rnd-rain.amd.js", ["exports", "jquery", "../structure.amd.js", "../app.amd.js", "./abstract-dialog.amd.js", "../worker.amd.js", "../draw.amd.js", "../chem.amd.js"], function(exports, _jquery, _structureAmd, _appAmd, _abstractDialogAmd, _workerAmd, _drawAmd, _chemAmd) {
   "use strict";
   Object.defineProperty(exports, "__esModule", {value: true});
   var _jquery2 = _interopRequireDefault(_jquery);
@@ -398,6 +556,7 @@ define("components/rnd-rain.amd.js", ["exports", "jquery", "../structure.amd.js"
   var _abstractDialogAmd2 = _interopRequireDefault(_abstractDialogAmd);
   var _workerAmd2 = _interopRequireDefault(_workerAmd);
   var _drawAmd2 = _interopRequireDefault(_drawAmd);
+  var _chemAmd2 = _interopRequireDefault(_chemAmd);
   function _interopRequireDefault(obj) {
     return obj && obj.__esModule ? obj : {default: obj};
   }
@@ -422,6 +581,13 @@ define("components/rnd-rain.amd.js", ["exports", "jquery", "../structure.amd.js"
     },
     apply() {
       this.fix();
+      let concentration = Number((0, _jquery2.default)("#nt-adsorb-concentration").val());
+      let hCount = _chemAmd2.default.conToNum(_structureAmd2.default.structure.atoms, concentration);
+      let currHCount = _chemAmd2.default.countAtoms(_structureAmd2.default.structure.atoms);
+      if (hCount <= currHCount) {
+        window.alert("The given mass concentration of hydrogen is already reached");
+        return;
+      }
       let captureDistances = new Map((0, _jquery2.default)("#nt-distance-fields").find("label[data-el]").get().map((label) => {
         return [(0, _jquery2.default)(label).data("el"), Number((0, _jquery2.default)("input", label).val())];
       }));
@@ -431,7 +597,7 @@ define("components/rnd-rain.amd.js", ["exports", "jquery", "../structure.amd.js"
         molecular: (0, _jquery2.default)("#nt-adsorb-mol").prop("checked"),
         biradical: (0, _jquery2.default)("#nt-adsorb-birad").prop("checked"),
         rHH: Number((0, _jquery2.default)("#nt-adsorb-r-hh").val()),
-        hCount: Number((0, _jquery2.default)("#nt-adsorb-count").val()),
+        hCount: hCount - currHCount,
         sphere: this.sphere,
         structure: _structureAmd2.default.structure,
         captureDistances: captureDistances
@@ -451,8 +617,6 @@ define("components/rnd-rain.amd.js", ["exports", "jquery", "../structure.amd.js"
     },
     handleMolecularChange(e) {
       let molecular = e.target.checked;
-      (0, _jquery2.default)("#nt-adsorb-count-mol").toggleClass("hidden", !molecular);
-      (0, _jquery2.default)("#nt-adsorb-count-atm").toggleClass("hidden", molecular);
       (0, _jquery2.default)("#nt-adsorb-birad").prop({
         checked: molecular,
         disabled: !molecular

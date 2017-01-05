@@ -4,6 +4,7 @@ import app from "../app.js";
 import AbstractDialog from "./abstract-dialog.js";
 import worker from "../worker.js";
 import draw from "../draw.js";
+import chem from "../chem.js";
 
 let rndRain = Object.assign(new AbstractDialog(".nt-rnd-rain-form"), {
     show() {
@@ -29,6 +30,13 @@ let rndRain = Object.assign(new AbstractDialog(".nt-rnd-rain-form"), {
 
     apply() {
         this.fix();
+        let concentration = Number($("#nt-adsorb-concentration").val());
+        let hCount = chem.conToNum(structure.structure.atoms, concentration);
+        let currHCount = chem.countAtoms(structure.structure.atoms);
+        if (hCount <= currHCount) {
+            window.alert("The given mass concentration of hydrogen is already reached");
+            return;
+        }
         let captureDistances = new Map($("#nt-distance-fields").find("label[data-el]").get().map(label => {
             return [$(label).data("el"), Number($("input", label).val())];
         }));
@@ -38,7 +46,7 @@ let rndRain = Object.assign(new AbstractDialog(".nt-rnd-rain-form"), {
             molecular: $("#nt-adsorb-mol").prop("checked"),
             biradical: $("#nt-adsorb-birad").prop("checked"),
             rHH: Number($("#nt-adsorb-r-hh").val()),
-            hCount: Number($("#nt-adsorb-count").val()),
+            hCount: hCount - currHCount,
             sphere: this.sphere,
             structure: structure.structure,
             captureDistances: captureDistances
@@ -61,8 +69,6 @@ let rndRain = Object.assign(new AbstractDialog(".nt-rnd-rain-form"), {
 
     handleMolecularChange(e) {
         let molecular = e.target.checked;
-        $("#nt-adsorb-count-mol").toggleClass("hidden", !molecular);
-        $("#nt-adsorb-count-atm").toggleClass("hidden", molecular);
         $("#nt-adsorb-birad").prop({checked: molecular, disabled: !molecular});
         $("#nt-adsorb-r-hh").prop({required: molecular, disabled: !molecular});
     },
