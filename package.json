@@ -1,6 +1,6 @@
 {
   "name": "nanothrower",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Model hydrogen adsorption on the surface of nanostructures based on the “Random rain” algorithm",
   "main": "index.js",
   "scripts": {
