@@ -1,5 +1,4 @@
 import Observer from "./observer.js";
-import $ from "jquery";
 
 function to$(target) {
     return (target && target.jquery) ? target : $(target);

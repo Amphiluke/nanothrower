@@ -213,7 +213,7 @@ export default {
                 type = name.slice(name.lastIndexOf(".") + 1).toLowerCase(),
                 format = formats[type] || formats.hin,
                 newStructure = format.parse(contents);
-            newStructure.name = name.replace(/.*[\/\\]/, "") || "unknown";
+            newStructure.name = name.replace(/.*[/\\]/, "") || "unknown";
             structure.overwrite(newStructure);
             return contents;
         });

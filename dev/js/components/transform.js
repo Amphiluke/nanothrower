@@ -1,4 +1,3 @@
-import $ from "jquery";
 import AbstractDialog from "./abstract-dialog.js";
 import app from "../app.js";
 import structure from "../structure.js";
@@ -25,17 +24,17 @@ let transform = Object.assign(new AbstractDialog(".nt-transform-form"), {
         structure.rotate(angle, axis);
     },
 
-    show() {
+    show(...args) {
         let centroid = structure.getCentroid();
         let $fields = this.$el.find(".nt-translate input[data-axis]");
         $fields.val(idx => centroid[$fields.eq(idx).data("axis")].toFixed(5));
         draw.addAxes();
-        return Object.getPrototypeOf(this).show.apply(this, arguments);
+        return Object.getPrototypeOf(this).show.apply(this, args);
     },
 
-    hide() {
+    hide(...args) {
         draw.removeAxes();
-        return Object.getPrototypeOf(this).hide.apply(this, arguments);
+        return Object.getPrototypeOf(this).hide.apply(this, args);
     }
 });
 

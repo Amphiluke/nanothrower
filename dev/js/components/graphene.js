@@ -1,13 +1,12 @@
-import $ from "jquery";
 import structure from "../structure.js";
 import app from "../app.js";
 import AbstractDialog from "./abstract-dialog.js";
 import makeGraphene from "../assembly/graphene.js";
 
 let graphene = Object.assign(new AbstractDialog(".nt-graphene-form"), {
-    handleApply() {
+    handleApply(...args) {
         if (this.$el[0].checkValidity()) {
-            return Object.getPrototypeOf(this).handleApply.apply(this, arguments);
+            return Object.getPrototypeOf(this).handleApply.apply(this, args);
         } else {
             window.alert("Please, fix invalid input first");
         }

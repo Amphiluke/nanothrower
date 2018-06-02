@@ -119,7 +119,7 @@ let core = {
     },
 
     adhereH({x, y, z}) {
-        settings.structure.atoms.push({el: "H", x: x, y: y, z: z, mol: ++settings.lastMol});
+        settings.structure.atoms.push({el: "H", x, y, z, mol: ++settings.lastMol});
     },
 
     adhereHH({x, y, z}) {

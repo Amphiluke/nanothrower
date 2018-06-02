@@ -1,4 +1,3 @@
-import $ from "jquery";
 import AbstractDialog from "./abstract-dialog.js";
 import structure from "../structure.js";
 import draw from "../draw.js";
@@ -50,7 +49,7 @@ let appearance = Object.assign(new AbstractDialog(".nt-appearance-form"), {
         } else {
             color = draw.getAtomColor(el);
         }
-        $("#nt-appearance-color").val("#" + ("000000" + color.toString(16)).slice(-6));
+        $("#nt-appearance-color").val("#" + color.toString(16).padStart(6, "0"));
     }
 });
 

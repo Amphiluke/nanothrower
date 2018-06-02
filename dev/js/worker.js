@@ -25,6 +25,8 @@ worker.addEventListener("message", ({data: {method, data} = {}}) => {
     }
 });
 
-worker.addEventListener("error", e => {throw e;});
+worker.addEventListener("error", e => {
+    throw e;
+});
 
 export default workerHelper;

@@ -1,4 +1,3 @@
-import $ from "jquery";
 import structure from "../structure.js";
 import app from "../app.js";
 import AbstractDialog from "./abstract-dialog.js";
@@ -7,22 +6,22 @@ import draw from "../draw.js";
 import chem from "../chem.js";
 
 let rndRain = Object.assign(new AbstractDialog(".nt-rnd-rain-form"), {
-    show() {
+    show(...args) {
         let sphere = this.sphere = structure.getWrappingSphere();
         sphere.r *= 1.1;
         draw.addWireSphere(sphere);
         $("#nt-sphere-radius").val(sphere.r.toFixed(3));
-        return Object.getPrototypeOf(this).show.apply(this, arguments);
+        return Object.getPrototypeOf(this).show.apply(this, args);
     },
 
-    hide() {
+    hide(...args) {
         draw.removeWireSphere();
-        return Object.getPrototypeOf(this).hide.apply(this, arguments);
+        return Object.getPrototypeOf(this).hide.apply(this, args);
     },
 
-    handleApply() {
+    handleApply(...args) {
         if (this.$el[0].checkValidity()) {
-            return Object.getPrototypeOf(this).handleApply.apply(this, arguments);
+            return Object.getPrototypeOf(this).handleApply.apply(this, args);
         } else {
             window.alert("Please, fix invalid input first");
         }
@@ -37,9 +36,8 @@ let rndRain = Object.assign(new AbstractDialog(".nt-rnd-rain-form"), {
             window.alert("The given mass concentration of hydrogen is already reached");
             return;
         }
-        let captureDistances = new Map($("#nt-distance-fields").find("label[data-el]").get().map(label => {
-            return [$(label).data("el"), Number($("input", label).val())];
-        }));
+        let labels = $("#nt-distance-fields").find("label[data-el]").get();
+        let captureDistances = new Map(labels.map(label => [$(label).data("el"), Number($("input", label).val())]));
         captureDistances.set("H1", captureDistances.get("H"));
         worker.invoke("run", {
             mode: this.$el.find("input[name='nt-src-mode']").filter(":checked").val(),
@@ -49,7 +47,7 @@ let rndRain = Object.assign(new AbstractDialog(".nt-rnd-rain-form"), {
             hCount: hCount - currHCount,
             sphere: this.sphere,
             structure: structure.structure,
-            captureDistances: captureDistances
+            captureDistances
         });
     },
 
@@ -81,7 +79,7 @@ let rndRain = Object.assign(new AbstractDialog(".nt-rnd-rain-form"), {
         }
     },
 
-    updateProgress: function (value) {
+    updateProgress(value) {
         app.trigger("app:progress", value);
     },
 

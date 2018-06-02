@@ -1,4 +1,3 @@
-import $ from "jquery";
 import Eventful from "../eventful.js";
 import app from "../app.js";
 import fileAPI from "../file-processing.js";

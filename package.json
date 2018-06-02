@@ -1,12 +1,12 @@
 {
   "name": "nanothrower",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "Model hydrogen adsorption on the surface of nanostructures based on the “Random rain” algorithm",
   "main": "index.js",
   "scripts": {
-    "postinstall": "gulp prepare",
-    "build": "gulp build",
-    "transpile": "gulp transpile"
+    "postinstall": "copyfiles -f node_modules/jquery/dist/jquery.slim.min.js vendor && uglifyjs node_modules/three/build/three.module.js -c -m -o vendor/three.min.js && lessc --clean-css=\"--advanced\" dev/css/main.less dev/css/main.css",
+    "build": "rollup -c && uglifyjs dev/js/rr-worker.js -c -m -o build/js/rr-worker.js && copyfiles -u 1 dev/css/main.css dev/index.html build",
+    "lint": "eslint dev/js/**/*.js"
   },
   "repository": {
     "type": "git",
@@ -24,22 +24,19 @@
   "bugs": {
     "url": "https://github.com/Amphiluke/nanothrower/issues"
   },
-  "homepage": "https://github.com/Amphiluke/nanothrower#readme",
-  "dependencies": {
-    "jquery": "^3.1.1",
-    "normalize.css": "^5.0.0",
-    "systemjs": "^0.19.41",
-    "three": "^0.82.1"
-  },
+  "homepage": "https://amphiluke.github.io/nanothrower/",
   "devDependencies": {
-    "babel-plugin-transform-es2015-modules-amd": "^6.18.0",
-    "eslint": "^3.10.2",
-    "gulp": "^3.9.1",
-    "gulp-babel": "^6.1.2",
-    "gulp-less": "^3.3.0",
-    "gulp-rename": "^1.2.2",
-    "gulp-replace": "^0.5.4",
+    "copyfiles": "^2.0.0",
+    "eslint": "^4.19.1",
+    "less": "^3.0.4",
     "less-plugin-clean-css": "^1.5.1",
-    "systemjs-builder": "^0.15.34"
+    "rollup": "^0.59.4",
+    "rollup-plugin-minify-es": "^1.1.1",
+    "uglify-es": "^3.3.9"
+  },
+  "dependencies": {
+    "jquery": "^3.3.1",
+    "normalize.css": "^8.0.0",
+    "three": "^0.93.0"
   }
 }

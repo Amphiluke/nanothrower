@@ -1,4 +1,4 @@
-import * as THREE from "three"; // http://stackoverflow.com/a/40251527
+import * as THREE from "../../vendor/three.min.js";
 import Cacheable from "./cacheable.js";
 import structure from "./structure.js";
 

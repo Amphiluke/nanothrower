@@ -171,20 +171,7 @@
 
 <div class="nt-progress" id="nt-progress"></div>
 
-<script src="../vendor/system.js"></script>
-<script>
-    System.config({
-        baseURL: "./js",
-        map: {
-            jquery: "../vendor/jquery.min.js",
-            three: "../vendor/three.min.js"
-        },
-        meta: {
-            jquery: {format: "cjs"},
-            three: {format: "cjs"}
-        }
-    });
-    System.import("interface.amd.js");
-</script>
+<script src="../vendor/jquery.slim.min.js"></script>
+<script type="module" src="./js/main.js"></script>
 </body>
 </html>

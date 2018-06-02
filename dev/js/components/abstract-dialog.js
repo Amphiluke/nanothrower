@@ -4,9 +4,27 @@ import Eventful from "../eventful.js";
 // to override those methods and implement their custom behavior. Therefore handlers are just anonymous functions
 // which call corresponding methods (either inherited or own) on instances
 let events = [
-    {type: "click", filter: ".nt-apply", handler(...params) { this.handleApply(...params); }},
-    {type: "click", filter: ".nt-discard", handler(...params) { this.handleDiscard(...params); }},
-    {type: "keyup", owner: document, handler(...params) { this.handleGlobalKeyUp(...params); }}
+    {
+        type: "click",
+        filter: ".nt-apply",
+        handler(...params) {
+            this.handleApply(...params);
+        }
+    },
+    {
+        type: "click",
+        filter: ".nt-discard",
+        handler(...params) {
+            this.handleDiscard(...params);
+        }
+    },
+    {
+        type: "keyup",
+        owner: document,
+        handler(...params) {
+            this.handleGlobalKeyUp(...params);
+        }
+    }
 ];
 
 export default class extends Eventful {

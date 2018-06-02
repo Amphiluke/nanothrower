@@ -1,4 +1,3 @@
-import $ from "jquery";
 import AbstractDialog from "./abstract-dialog.js";
 import fileAPI from "../file-processing.js";
 import app from "../app.js";
