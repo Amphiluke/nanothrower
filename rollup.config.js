@@ -1,4 +1,4 @@
-import minify from "rollup-plugin-minify-es";
+import {terser} from "rollup-plugin-terser";
 
 export default {
     input: "dev/js/main.js",
@@ -6,6 +6,6 @@ export default {
         file: "build/js/main.js",
         format: "es"
     },
-    plugins: [minify()],
+    plugins: [terser({module: true})],
     external: id => id.endsWith("three.min.js")
 };

@@ -1,11 +1,11 @@
 {
   "name": "nanothrower",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Model hydrogen adsorption on the surface of nanostructures based on the “Random rain” algorithm",
   "main": "index.js",
   "scripts": {
     "postinstall": "copyfiles -f node_modules/jquery/dist/jquery.slim.min.js vendor && uglifyjs node_modules/three/build/three.module.js -c -m -o vendor/three.min.js && lessc --clean-css=\"--advanced\" dev/css/main.less dev/css/main.css",
-    "build": "rollup -c && uglifyjs dev/js/rr-worker.js -c -m -o build/js/rr-worker.js && copyfiles -u 1 dev/css/main.css dev/index.html build",
+    "build": "rollup -c && terser dev/js/rr-worker.js -c toplevel -m toplevel -o build/js/rr-worker.js && copyfiles -u 1 dev/css/main.css dev/index.html build",
     "lint": "eslint dev/js/**/*.js"
   },
   "repository": {
@@ -30,9 +30,9 @@
     "eslint": "^4.19.1",
     "less": "^3.0.4",
     "less-plugin-clean-css": "^1.5.1",
-    "rollup": "^0.59.4",
-    "rollup-plugin-minify-es": "^1.1.1",
-    "uglify-es": "^3.3.9"
+    "rollup": "^0.60.7",
+    "rollup-plugin-terser": "^1.0.1",
+    "terser": "^3.7.6"
   },
   "dependencies": {
     "jquery": "^3.3.1",
