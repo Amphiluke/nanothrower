@@ -1,10 +1,10 @@
 {
   "name": "nanothrower",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Model hydrogen adsorption on the surface of nanostructures based on the “Random rain” algorithm",
   "main": "index.js",
   "scripts": {
-    "postinstall": "copyfiles -f node_modules/jquery/dist/jquery.slim.min.js vendor && uglifyjs node_modules/three/build/three.module.js -c -m -o vendor/three.min.js && lessc --clean-css=\"--advanced\" dev/css/main.less dev/css/main.css",
+    "postinstall": "copyfiles -f node_modules/jquery/dist/jquery.slim.min.js vendor && terser node_modules/three/build/three.module.js -c -m -o vendor/three.min.js && lessc --clean-css=\"--advanced\" dev/css/main.less dev/css/main.css",
     "build": "rollup -c && terser dev/js/rr-worker.js -c toplevel -m toplevel -o build/js/rr-worker.js && copyfiles -u 1 dev/css/main.css dev/index.html build",
     "lint": "eslint dev/js/**/*.js"
   },
@@ -26,17 +26,17 @@
   },
   "homepage": "https://amphiluke.github.io/nanothrower/",
   "devDependencies": {
-    "copyfiles": "^2.0.0",
-    "eslint": "^4.19.1",
-    "less": "^3.0.4",
+    "copyfiles": "^2.1.0",
+    "eslint": "^5.11.1",
+    "less": "^3.9.0",
     "less-plugin-clean-css": "^1.5.1",
-    "rollup": "^0.60.7",
-    "rollup-plugin-terser": "^1.0.1",
-    "terser": "^3.7.6"
+    "rollup": "^1.0.0",
+    "rollup-plugin-terser": "^4.0.1",
+    "terser": "^3.14.0"
   },
   "dependencies": {
     "jquery": "^3.3.1",
-    "normalize.css": "^8.0.0",
-    "three": "^0.93.0"
+    "normalize.css": "^8.0.1",
+    "three": "^0.100.0"
   }
 }

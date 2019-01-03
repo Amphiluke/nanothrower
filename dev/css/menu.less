@@ -13,7 +13,7 @@
         padding:0;
         position:relative;
     }
-    button[menu] {
+    button {
         cursor:pointer;
         background:none;
         border:none;
@@ -21,11 +21,8 @@
         &:hover {
             background:@highlight-color;
         }
-        &:before {
-            content:attr(value);
-        }
     }
-    menu[type="popup"] {
+    .nt-popup {
         background:@panel-light-color;
         border:1px solid @border-light-color;
         margin:0;
@@ -36,28 +33,25 @@
         &.expanded {
             visibility:visible;
         }
-    }
-    menuitem {
-        cursor:pointer;
-        display:block;
-        max-width:250px;
-        overflow:hidden;
-        padding:5px 7px;
-        text-overflow:ellipsis;
-        white-space:nowrap;
-        &:hover {
-            background:@highlight-color;
-        }
-        &:before {
-            content:attr(label);
-        }
-        &[disabled] {
-            color:#a0a0a0;
+        li {
+            cursor:pointer;
+            display:block;
+            max-width:250px;
+            overflow:hidden;
+            padding:5px 7px;
+            text-overflow:ellipsis;
+            white-space:nowrap;
             &:hover {
-                background:none;
+                background:@highlight-color;
             }
-            &:before {
-                text-shadow:0 1px 0 #fff;
+            &[disabled] {
+                color:#a0a0a0;
+                &:hover {
+                    background:none;
+                }
+                &:before {
+                    text-shadow:0 1px 0 #fff;
+                }
             }
         }
     }
@@ -77,7 +71,7 @@
     position:absolute;
     top:3px * 2 + @root-line-height;
     z-index:2;
-    menu.expanded + & {
+    .nt-menu.expanded + & {
         display:inline;
     }
 }

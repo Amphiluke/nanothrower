@@ -14,9 +14,9 @@ let menu = Object.assign(new Eventful(".nt-menu"), {
             return;
         }
         let $target = $(e.target);
-        let $popups = this.$el.find("menu.expanded");
-        if ($target.is(".nt-menu button[menu]")) {
-            let $targetPopup = $("#" + $target.attr("menu")).toggleClass("expanded");
+        let $popups = this.$el.find(".nt-popup.expanded");
+        if ($target.is(".nt-menu button")) {
+            let $targetPopup = $target.next(".nt-popup").toggleClass("expanded");
             if ($targetPopup.hasClass("expanded")) {
                 this.setItemStates();
             }
@@ -29,9 +29,9 @@ let menu = Object.assign(new Eventful(".nt-menu"), {
         if (this.disabled) {
             return;
         }
-        let $expandedMenu = this.$el.find("menu.expanded");
+        let $expandedMenu = this.$el.find(".nt-popup.expanded");
         if ($expandedMenu.length) {
-            let $targetMenu = $(e.target).siblings("menu");
+            let $targetMenu = $(e.target).next(".nt-popup");
             if (!$expandedMenu.is($targetMenu)) {
                 $expandedMenu.removeClass("expanded");
                 $targetMenu.addClass("expanded");
@@ -53,7 +53,7 @@ let menu = Object.assign(new Eventful(".nt-menu"), {
     },
 
     setItemStates(action) {
-        let $items = this.$el.find("menuitem[data-action]");
+        let $items = this.$el.find("[data-action]");
         if (action) {
             $items = $items.filter(`[data-action="${action}"]`);
         }
@@ -88,8 +88,8 @@ menu.listen([
     {type: "app:stateChange", owner: app, handler: "handleAppStateChange"},
 
     {type: "click", owner: document, handler: "handleGlobalClick"},
-    {type: "mouseenter", owner: ".nt-menu", filter: "button[menu]", handler: "handleHover"},
-    {type: "click", owner: ".nt-menu", filter: "menuitem[data-action]", handler: "handleAction"},
+    {type: "mouseenter", owner: ".nt-menu", filter: "button", handler: "handleHover"},
+    {type: "click", owner: ".nt-menu", filter: "[data-action]", handler: "handleAction"},
     {type: "change", owner: "#nt-file", handler: "handleFile"}
 ]);
 

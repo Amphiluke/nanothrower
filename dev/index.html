@@ -3,48 +3,55 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Nanothrower</title>
-    <link rel="icon" type="image/png" href="../favicon.png"/>
-    <link rel="stylesheet" href="css/main.css"/>
-    <meta name="description" content="Model hydrogen adsorption on the surface of nanostructures based on the “Random rain” algorithm"/>
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <link rel="stylesheet" href="css/main.css">
+    <meta name="description" content="Model hydrogen adsorption on the surface of nanostructures based on the “Random rain” algorithm">
+    <meta property="og:url" content="https://amphiluke.github.io/nanothrower/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Nanothrower">
+    <meta property="og:description" content="Model hydrogen adsorption on the surface of nanostructures based on the “Random rain” algorithm">
+    <meta property="og:image" content="https://amphiluke.github.io/nanothrower/img/preview.png">
+    <meta property="og:image:width" content="1100">
+    <meta property="og:image:height" content="576">
 </head>
 <body>
 
-<menu type="toolbar" class="nt-menu">
+<ul class="nt-menu nt-toolbar">
     <li>
-        <button type="menu" value="File" menu="file-menu"></button>
-        <menu id="file-menu" type="popup">
-            <menuitem label="Load structure…" data-action="load"></menuitem>
-            <menuitem label="Save structure…" data-action="save"></menuitem>
-        </menu>
+        <button type="button" value="File">File</button>
+        <ul class="nt-popup">
+            <li data-action="load">Load structure…</li>
+            <li data-action="save">Save structure…</li>
+        </ul>
         <input type="file" id="nt-file" autocomplete="off" accept=".hin,.ml2,.mol2,.xyz,.json"/>
     </li>
     <li>
-        <button type="menu" value="Make" menu="make-menu"></button>
-        <menu id="make-menu" type="popup">
-            <menuitem label="Create graphene…" data-action="graphene"></menuitem>
-            <menuitem label="Create nanotube…" data-action="nanotube"></menuitem>
-        </menu>
+        <button type="button" value="Make">Make</button>
+        <ul class="nt-popup">
+            <li data-action="graphene">Create graphene…</li>
+            <li data-action="nanotube">Create nanotube…</li>
+        </ul>
     </li>
     <li>
-        <button type="menu" value="Edit" menu="edit-menu"></button>
-        <menu id="edit-menu" type="popup">
-            <menuitem label="Transformation of coordinates…" data-action="transform"></menuitem>
-            <menuitem label="Convert to BN" data-action="bnConvert"></menuitem>
-        </menu>
+        <button type="button" value="Edit">Edit</button>
+        <ul class="nt-popup">
+            <li data-action="transform">Transformation of coordinates…</li>
+            <li data-action="bnConvert">Convert to BN</li>
+        </ul>
     </li>
     <li>
-        <button type="menu" value="Run" menu="run-menu"></button>
-        <menu id="run-menu" type="popup">
-            <menuitem label="Random rain…" data-action="rndRain"></menuitem>
-        </menu>
+        <button type="button" value="Run">Run</button>
+        <ul class="nt-popup">
+            <li data-action="rndRain">Random rain…</li>
+        </ul>
     </li>
     <li>
-        <button type="menu" value="View" menu="view-menu"></button>
-        <menu id="view-menu" type="popup">
-            <menuitem label="Appearance…" data-action="alterView"></menuitem>
-        </menu>
+        <button type="button" value="View">View</button>
+        <ul class="nt-popup">
+            <li data-action="alterView">Appearance…</li>
+        </ul>
     </li>
-</menu>
+</ul>
 
 <form action="#" class="nt-dialog nt-save-form hidden">
     <h2>Save structure</h2>
