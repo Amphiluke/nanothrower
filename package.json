@@ -26,17 +26,17 @@
   },
   "homepage": "https://amphiluke.github.io/nanothrower/",
   "devDependencies": {
-    "copyfiles": "^2.1.0",
-    "eslint": "^5.16.0",
+    "copyfiles": "^2.1.1",
+    "eslint": "^6.0.1",
     "less": "^3.9.0",
     "less-plugin-clean-css": "^1.5.1",
-    "rollup": "^1.11.2",
-    "rollup-plugin-terser": "^4.0.4",
-    "terser": "^3.17.0"
+    "rollup": "^1.16.7",
+    "rollup-plugin-terser": "^5.1.1",
+    "terser": "^4.1.2"
   },
   "dependencies": {
     "jquery": "^3.4.1",
     "normalize.css": "^8.0.1",
-    "three": "^0.104.0"
+    "three": "^0.106.2"
   }
 }

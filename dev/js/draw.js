@@ -3,13 +3,14 @@ import Cacheable from "./cacheable.js";
 import structure from "./structure.js";
 
 let colors = new Cacheable(color => new THREE.Color(color));
+let hasOwnProperty = Object.prototype.hasOwnProperty;
 
 let presets = Object.create({
     get(el) {
-        return this.hasOwnProperty(el) ? this[el] : this._def;
+        return hasOwnProperty.call(this, el) ? this[el] : this._def;
     },
     set(el, value) {
-        if (this.hasOwnProperty(el)) {
+        if (hasOwnProperty.call(this, el)) {
             Object.assign(this[el], value);
         } else {
             this[el] = Object.assign({}, this._def, value);
