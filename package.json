@@ -4,7 +4,7 @@
   "description": "Model hydrogen adsorption on the surface of nanostructures based on the “Random rain” algorithm",
   "main": "index.js",
   "scripts": {
-    "postinstall": "copyfiles -f node_modules/jquery/dist/jquery.slim.min.js vendor && terser node_modules/three/build/three.module.js -c -m -o vendor/three.min.js && lessc dev/css/main.less | cleancss -O2 -o dev/css/main.css",
+    "postinstall": "copyfiles -f node_modules/jquery/dist/jquery.slim.min.js vendor && terser node_modules/three/build/three.module.js -c -m -o vendor/three.min.js && lessc dev/css/main.less -ru=all | cleancss -O2 -o dev/css/main.css",
     "build": "rollup -c && terser dev/js/rr-worker.js -c toplevel -m toplevel -o build/js/rr-worker.js && copyfiles -u 1 dev/css/main.css dev/index.html build",
     "lint": "eslint dev/js"
   },
@@ -30,13 +30,13 @@
     "copyfiles": "^2.2.0",
     "eslint": "^6.8.0",
     "less": "^3.11.1",
-    "rollup": "^2.1.0",
+    "rollup": "^2.7.6",
     "rollup-plugin-terser": "^5.3.0",
-    "terser": "^4.6.7"
+    "terser": "^4.6.13"
   },
   "dependencies": {
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "normalize.css": "^8.0.1",
-    "three": "^0.114.0"
+    "three": "^0.116.1"
   }
 }
