@@ -22,6 +22,7 @@ let presets = Object.create({
 
 presets.set("C", {color: 0xFF0000});
 presets.set("H", {radius: 0.7});
+presets.set("H1", {color: 0xF9F19F, radius: 0.7});
 presets.set("B", {color: 0xFFFF00});
 presets.set("N", {color: 0x0000FF});
 
@@ -45,9 +46,9 @@ let bondMaterials = new Cacheable(type => {
     // There are only 2 graph types: "basic" and "extra", however construction of bond materials through `Cacheable`
     // has an advantage of lazy instantiation of complex objects (instances will be created only on actual need)
     if (type === "extra") {
-        return new THREE.LineDashedMaterial({dashSize: 0.2, gapSize: 0.1, vertexColors: THREE.VertexColors});
+        return new THREE.LineDashedMaterial({dashSize: 0.2, gapSize: 0.1, vertexColors: true});
     } else { // type === "basic"
-        return new THREE.LineBasicMaterial({vertexColors: THREE.VertexColors});
+        return new THREE.LineBasicMaterial({vertexColors: true});
     }
 });
 
@@ -165,8 +166,8 @@ let draw = {
     },
 
     addSceneAtoms() {
-        let Mesh = THREE.Mesh,
-            group = assets3.group;
+        let {Mesh} = THREE;
+        let {group} = assets3;
         for (let {el, x, y, z} of structure.structure.atoms) {
             let atom3 = new Mesh(atomGeometries.get(el), atomMaterials.get(el));
             atom3.position.x = x;
@@ -177,47 +178,55 @@ let draw = {
     },
 
     addSceneBonds() {
-        let Line = THREE.Line,
-            Vector3 = THREE.Vector3,
-            group = assets3.group,
-            atoms = structure.structure.atoms,
-            bindMap = new Int8Array(atoms.length);
+        let {Line, BufferGeometry, Float32BufferAttribute, Points} = THREE;
+        let {group} = assets3;
+        let {atoms} = structure.structure;
+        let bindMap = new Int8Array(atoms.length);
         for (let {type, iAtm, jAtm} of structure.structure.bonds) {
             bindMap[iAtm] = bindMap[jAtm] = 1;
-            let bondGeometry = new THREE.Geometry();
+            let bondGeometry = new BufferGeometry();
+            let bondVertices = [];
+            let bondColors = [];
             let atom = atoms[iAtm];
-            bondGeometry.vertices.push(new Vector3(atom.x, atom.y, atom.z));
-            bondGeometry.colors.push(colors.get(presets.get(atom.el).color));
+            let color = colors.get(presets.get(atom.el).color);
+            bondVertices.push(atom.x, atom.y, atom.z);
+            bondColors.push(color.r, color.g, color.b);
+
             atom = atoms[jAtm];
-            bondGeometry.vertices.push(new Vector3(atom.x, atom.y, atom.z));
-            bondGeometry.colors.push(colors.get(presets.get(atom.el).color));
+            color = colors.get(presets.get(atom.el).color);
+            bondVertices.push(atom.x, atom.y, atom.z);
+            bondColors.push(color.r, color.g, color.b);
+
+            bondGeometry.setAttribute("position", new Float32BufferAttribute(bondVertices, 3));
+            bondGeometry.setAttribute("color", new Float32BufferAttribute(bondColors, 3));
             if (type === "x") {
-                bondGeometry.computeLineDistances();
-                group.add(new Line(bondGeometry, bondMaterials.get("extra"), THREE.LineStrip));
+                let line = new Line(bondGeometry, bondMaterials.get("extra"));
+                line.computeLineDistances();
+                group.add(line);
             } else {
                 group.add(new Line(bondGeometry, bondMaterials.get("basic")));
             }
         }
 
-        let Points = THREE.Points;
         // Draw points for unbound atoms (if any)
         let i = bindMap.indexOf(0);
         while (i !== -1) {
-            let pointGeometry = new THREE.Geometry();
+            let pointGeometry = new BufferGeometry();
             let atom = atoms[i];
-            pointGeometry.vertices.push(new Vector3(atom.x, atom.y, atom.z));
+            let vertex = [atom.x, atom.y, atom.z];
+            pointGeometry.setAttribute("position", new Float32BufferAttribute(vertex, 3));
             group.add(new Points(pointGeometry, pointMaterials.get(atom.el)));
             i = bindMap.indexOf(0, i + 1);
         }
     },
 
     addScenePoints() {
-        let Points = THREE.Points,
-            Vector3 = THREE.Vector3,
-            group = assets3.group;
+        let {Points, Float32BufferAttribute} = THREE;
+        let {group} = assets3;
         for (let {el, x, y, z} of structure.structure.atoms) {
-            let pointGeometry = new THREE.Geometry();
-            pointGeometry.vertices.push(new Vector3(x, y, z));
+            let pointGeometry = new THREE.BufferGeometry();
+            let vertex = [x, y, z];
+            pointGeometry.setAttribute("position", new Float32BufferAttribute(vertex, 3));
             group.add(new Points(pointGeometry, pointMaterials.get(el)));
         }
     },
