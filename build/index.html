@@ -74,9 +74,9 @@
     <h2>Create graphene</h2>
     <fieldset>
         <legend>Graphene parameters</legend>
-        <label><var>L<sub>x</sub></var>, Å <input type="text" id="graphene-width" title="Width of a graphene sheet" pattern="\d*\.?\d+([eE][+-]?\d+)?" value="30" required></label>
-        <label><var>L<sub>y</sub></var>, Å <input type="text" id="graphene-height" title="Height of a graphene sheet" pattern="\d*\.?\d+([eE][+-]?\d+)?" value="30" required></label>
-        <label><var>R</var><sub>C–C</sub>, Å <input type="text" id="graphene-rcc" title="Equilibrium distance in C–C pair" pattern="\d*\.?\d+([eE][+-]?\d+)?" value="1.42" required></label>
+        <label><var>L<sub>x</sub></var>, Å <input type="text" id="graphene-width" title="Width of a graphene sheet" pattern="\d*\.?\d+([eE][+\-]?\d+)?" value="30" required></label>
+        <label><var>L<sub>y</sub></var>, Å <input type="text" id="graphene-height" title="Height of a graphene sheet" pattern="\d*\.?\d+([eE][+\-]?\d+)?" value="30" required></label>
+        <label><var>R</var><sub>C–C</sub>, Å <input type="text" id="graphene-rcc" title="Equilibrium distance in C–C pair" pattern="\d*\.?\d+([eE][+\-]?\d+)?" value="1.42" required></label>
     </fieldset>
     <fieldset class="nt-dialog-btns">
         <input type="button" class="nt-apply" value="Create"/>
@@ -88,9 +88,9 @@
     <h2>Create nanotube</h2>
     <fieldset>
         <legend>Nanotube parameters</legend>
-        <label><var>R</var>, Å <input type="text" id="nanotube-radius" title="Radius of a nanotube" pattern="\d*\.?\d+([eE][+-]?\d+)?" value="10" required></label>
-        <label><var>L</var>, Å <input type="text" id="nanotube-length" title="Length of a nanotube" pattern="\d*\.?\d+([eE][+-]?\d+)?" value="30" required></label>
-        <label><var>R</var><sub>C–C</sub>, Å <input type="text" id="nanotube-rcc" title="Equilibrium distance in C–C pair" pattern="\d*\.?\d+([eE][+-]?\d+)?" value="1.42" required></label>
+        <label><var>R</var>, Å <input type="text" id="nanotube-radius" title="Radius of a nanotube" pattern="\d*\.?\d+([eE][+\-]?\d+)?" value="10" required></label>
+        <label><var>L</var>, Å <input type="text" id="nanotube-length" title="Length of a nanotube" pattern="\d*\.?\d+([eE][+\-]?\d+)?" value="30" required></label>
+        <label><var>R</var><sub>C–C</sub>, Å <input type="text" id="nanotube-rcc" title="Equilibrium distance in C–C pair" pattern="\d*\.?\d+([eE][+\-]?\d+)?" value="1.42" required></label>
     </fieldset>
     <fieldset class="nt-dialog-btns">
         <input type="button" class="nt-apply" value="Create"/>
@@ -138,14 +138,14 @@
             <legend>Adsorbate</legend>
             <label><input type="checkbox" id="nt-adsorb-mol" checked> Molecular</label>
             <label><input type="checkbox" id="nt-adsorb-birad" checked> Biradical</label>
-            <label class="label-right"><var>R</var><sub>H–H</sub>, Å <input type="text" id="nt-adsorb-r-hh" title="Interatomic distance in the H–H molecule" pattern="\d*\.?\d+([eE][+-]?\d+)?" required></label>
-            <label class="label-right"><var>ω</var><sub>H</sub> <input type="text" id="nt-adsorb-concentration" title="Mass concentration of hydrogen, 0 < ω < 1" pattern="0?\.\d+([eE][+-]?\d+)?" required></label>
+            <label class="label-right"><var>R</var><sub>H–H</sub>, Å <input type="text" id="nt-adsorb-r-hh" title="Interatomic distance in the H–H molecule" pattern="\d*\.?\d+([eE][+\-]?\d+)?" required></label>
+            <label class="label-right"><var>ω</var><sub>H</sub> <input type="text" id="nt-adsorb-concentration" title="Mass concentration of hydrogen, 0 < ω < 1" pattern="0?\.\d+([eE][+\-]?\d+)?" required></label>
         </fieldset>
         <fieldset class="nt-sphere">
             <legend>Hydrogen source surface</legend>
             <label><input type="radio" name="nt-src-mode" value="sphere" checked> Sphere</label>
             <label><input type="radio" name="nt-src-mode" value="hemisphere"> Hemisphere</label>
-            <label class="label-right"><var>R</var><sub>sph</sub>, Å <input type="text" id="nt-sphere-radius" title="Sphere radius" pattern="\d*\.?\d+([eE][+-]?\d+)?" required></label>
+            <label class="label-right"><var>R</var><sub>sph</sub>, Å <input type="text" id="nt-sphere-radius" title="Sphere radius" pattern="\d*\.?\d+([eE][+\-]?\d+)?" required></label>
         </fieldset>
     </div>
     <fieldset class="nt-dialog-btns">
