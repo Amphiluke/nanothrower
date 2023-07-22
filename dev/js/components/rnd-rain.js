@@ -60,7 +60,7 @@ let rndRain = Object.assign(new AbstractDialog(".nt-rnd-rain-form"), {
         atomSet.add("H");
         let html = "";
         for (let el of atomSet) {
-            html += `<label data-el="${el}"><input type="text" pattern="\\d*\\.?\\d+([eE][+-]?\\d+)?" required></label>`;
+            html += `<label data-el="${el}"><input type="text" pattern="\\d*\\.?\\d+([eE][+\\-]?\\d+)?" required></label>`;
         }
         $("#nt-distance-fields").html(html);
     },
