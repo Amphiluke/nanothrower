@@ -233,7 +233,7 @@ let draw = {
 
     addAxes() {
         if (!this.axes) {
-            this.axes = new THREE.AxisHelper(20);
+            this.axes = new THREE.AxesHelper(20);
             assets3.scene.add(this.axes);
             this.update();
         }
