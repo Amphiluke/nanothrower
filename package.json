@@ -31,10 +31,10 @@
     "@stylistic/eslint-plugin": "^5.10.0",
     "clean-css-cli": "^5.6.3",
     "copyfiles": "^2.4.1",
-    "eslint": "^10.0.3",
+    "eslint": "^10.1.0",
     "globals": "^17.4.0",
-    "less": "^4.5.1",
-    "rollup": "^4.59.0"
+    "less": "^4.6.4",
+    "rollup": "^4.60.0"
   },
   "dependencies": {
     "jquery": "^3.7.1",
